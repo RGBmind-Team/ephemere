@@ -26,8 +26,7 @@ The plugin is 100% free, fully functional, and unrestricted. For advanced agency
 * **Instant Account Lockout**: Instantly revoke access with a single checkbox toggle, without altering user passwords or deleting accounts.
 * **Access Monitoring**: Real-time read-only view of login counts and last login timestamp, with an option to reset the counter when re-enabling access.
 * **Real-Time Active Session Invalidation**: If an active temporary user is browsing the admin dashboard when their expiration time arrives, their session and authentication cookies are revoked immediately.
-* **Users List Status Column**: Visual account health badge right inside the WordPress Users screen (Active, Expired, Locked, Logins Exhausted).
-* **Multi-Language Global Suite**: Fully translated into 6 languages (English, Italian, Spanish, French, German, Brazilian Portuguese) with automatic detection and manual override.
+* **Multi-Language & i18n Ready**: Fully internationalized with POT template, ready for community translations via translate.wordpress.org, with automatic locale detection and manual override.
 
 ### Architecture & Cybersecurity
 
@@ -84,7 +83,8 @@ RGBmind Ephemere PRO is a separate commercial add-on plugin for agencies needing
 = 1.2.1 =
 * 100% WordPress.org compliant architecture: clean separation of free core features and commercial companion add-on.
 * Progressive version display: Added visible version badges across the administrative dashboard and user profile management sections.
-* Enhanced localization loader for seamless compatibility with modern WordPress JIT translation controllers.
+* Aligned localization with WordPress.org standards: removed redundant load_plugin_textdomain for seamless core JIT translation loading.
+* Included official .pot translation template; translations managed centrally via translate.wordpress.org.
 * Simplified language selection interface ("Automatic").
 * Expanded automated test runner to comprehensive test suites.
 * Verified compatibility with WordPress 6.7+ and PHP 8.2.

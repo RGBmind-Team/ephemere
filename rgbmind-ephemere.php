@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       RGBmind Ephemere
- * Plugin URI:        https://rgbmind.com/plugins/rgbmind-ephemere
+ * Plugin URI:        https://rgbmind.com
  * Description:       Advanced temporary login and timed access manager for WordPress users. Set expiration dates, max login limits, and instant account locking with zero custom database tables and zero external API calls.
  * Version:           1.2.1
  * Requires at least: 5.8
@@ -64,42 +64,6 @@ function rgbmind_eph_filter_plugin_locale( $locale, $domain ) {
 	return $locale;
 }
 add_filter( 'plugin_locale', 'rgbmind_eph_filter_plugin_locale', 10, 2 );
-
-/**
- * Load plugin textdomain for internationalization.
- *
- * Checks for user-configured manual language preference or falls back
- * automatically to active WordPress locale. Direct load_textdomain ensures
- * instant compatibility with WordPress 6.5+ and 6.7+ JIT translation controllers.
- *
- * @return void
- */
-function rgbmind_eph_load_textdomain() {
-	$chosen = get_option( 'rgbmind_eph_language', 'auto' );
-	$locale = ( ! empty( $chosen ) && 'auto' !== $chosen ) ? preg_replace( '/[^A-Za-z0-9_]/', '', (string) $chosen ) : determine_locale();
-
-	// Unload any prior loaded instance to ensure clean language switching
-	unload_textdomain( 'rgbmind-ephemere' );
-
-	// English is the default source language, so no MO file is needed
-	if ( 'en_US' === $locale || ( 'auto' !== $chosen && 0 === strpos( $locale, 'en_' ) ) ) {
-		return;
-	}
-
-	$mofile = RGBMIND_EPH_PLUGIN_DIR . 'languages/rgbmind-ephemere-' . $locale . '.mo';
-	if ( file_exists( $mofile ) ) {
-		load_textdomain( 'rgbmind-ephemere', $mofile, $locale );
-	} else {
-		// Fallback for standard WordPress translation repository
-		load_plugin_textdomain(
-			'rgbmind-ephemere',
-			false,
-			dirname( plugin_basename( RGBMIND_EPH_PLUGIN_FILE ) ) . '/languages'
-		);
-	}
-}
-add_action( 'plugins_loaded', 'rgbmind_eph_load_textdomain', 5 );
-add_action( 'init', 'rgbmind_eph_load_textdomain', 5 );
 
 /* =========================================================================
  * 1. EXTENSIBILITY & PRO ADDON HOOKS
@@ -832,7 +796,6 @@ function rgbmind_eph_render_dashboard() {
 				if ( array_key_exists( $chosen_lang, $supported ) ) {
 					update_option( 'rgbmind_eph_language', $chosen_lang );
 					unload_textdomain( 'rgbmind-ephemere' );
-					rgbmind_eph_load_textdomain();
 					$notice      = __( 'Language preference updated successfully.', 'rgbmind-ephemere' );
 					$notice_type = 'success';
 				}
