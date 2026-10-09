@@ -26,7 +26,7 @@ The plugin is 100% free, fully functional, and unrestricted. For advanced agency
 * **Instant Account Lockout**: Instantly revoke access with a single checkbox toggle, without altering user passwords or deleting accounts.
 * **Access Monitoring**: Real-time read-only view of login counts and last login timestamp, with an option to reset the counter when re-enabling access.
 * **Real-Time Active Session Invalidation**: If an active temporary user is browsing the admin dashboard when their expiration time arrives, their session and authentication cookies are revoked immediately.
-* **Multi-Language & i18n Ready**: Fully internationalized with POT template, ready for community translations via translate.wordpress.org, with automatic locale detection and manual override.
+* **Multi-Language & i18n Ready**: Fully internationalized with POT template, ready for community translations via translate.wordpress.org, automatically adapting to your site and user profile locale.
 
 ### Architecture & Cybersecurity
 
@@ -56,7 +56,7 @@ Visit [rgbmind.com/ephemere](https://rgbmind.com/ephemere/) to learn more about 
 3. Go to **Users > All Users** and click **Edit** on the user you wish to make temporary.
 4. Scroll to the **RGBmind Ephemere – Temporary Access Management** section.
 5. Check **Enable temporary access restrictions for this user** and configure the desired expiration date or maximum login count.
-6. To configure language preferences or view an overview of temporary accounts, navigate to **RGBmind Ephemere** in your WordPress sidebar.
+6. To view an overview of temporary accounts or plugin settings, navigate to **RGBmind Ephemere** in your WordPress sidebar.
 
 == Frequently Asked Questions ==
 
@@ -85,7 +85,7 @@ RGBmind Ephemere PRO is a separate commercial add-on plugin for agencies needing
 * Progressive version display: Added visible version badges across the administrative dashboard and user profile management sections.
 * Aligned localization with WordPress.org standards: removed redundant load_plugin_textdomain for seamless core JIT translation loading.
 * Included official .pot translation template; translations managed centrally via translate.wordpress.org.
-* Simplified language selection interface ("Automatic").
+* Seamless native localization: automatically adheres to site language (Settings > General) and individual profile language (Users > Profile).
 * Expanded automated test runner to comprehensive test suites.
 * Verified compatibility with WordPress 6.7+ and PHP 8.2.
 

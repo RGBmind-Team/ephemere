@@ -30,41 +30,6 @@ define( 'RGBMIND_EPH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RGBMIND_EPH_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'RGBMIND_EPH_PRO_URL', 'https://rgbmind.com/ephemere/' );
 
-/**
- * Returns supported languages for the plugin.
- *
- * @return array
- */
-function rgbmind_eph_get_supported_languages() {
-	return array(
-		'auto'  => __( 'Automatic', 'rgbmind-ephemere' ),
-		'en_US' => 'English (US)',
-		'it_IT' => 'Italiano',
-		'es_ES' => 'Español',
-		'fr_FR' => 'Français',
-		'de_DE' => 'Deutsch',
-		'pt_BR' => 'Português do Brasil',
-	);
-}
-
-/**
- * Filters the plugin locale to allow manual language override.
- *
- * @param string $locale Current locale.
- * @param string $domain Current textdomain.
- * @return string
- */
-function rgbmind_eph_filter_plugin_locale( $locale, $domain ) {
-	if ( 'rgbmind-ephemere' === $domain ) {
-		$override = get_option( 'rgbmind_eph_language', 'auto' );
-		if ( ! empty( $override ) && 'auto' !== $override ) {
-			return preg_replace( '/[^A-Za-z0-9_]/', '', (string) $override );
-		}
-	}
-	return $locale;
-}
-add_filter( 'plugin_locale', 'rgbmind_eph_filter_plugin_locale', 10, 2 );
-
 /* =========================================================================
  * 1. EXTENSIBILITY & PRO ADDON HOOKS
  * ========================================================================= */
@@ -302,18 +267,24 @@ function rgbmind_eph_render_user_profile_fields( $user ) {
 							<?php
 							if ( $max_logins > 0 ) {
 								$remaining = max( 0, $max_logins - $login_count );
-								printf(
-									/* translators: 1: current, 2: max, 3: remaining */
-									esc_html__( '%1$d of %2$d logins used (%3$d remaining).', 'rgbmind-ephemere' ),
-									$login_count,
-									$max_logins,
-									$remaining
+								/* translators: 1: current login count, 2: maximum allowed logins, 3: remaining logins */
+								echo esc_html(
+									sprintf(
+										/* translators: 1: current login count, 2: maximum allowed logins, 3: remaining logins */
+										__( '%1$d of %2$d logins used (%3$d remaining).', 'rgbmind-ephemere' ),
+										absint( $login_count ),
+										absint( $max_logins ),
+										absint( $remaining )
+									)
 								);
 							} else {
-								printf(
-									/* translators: %d: current login count */
-									esc_html__( '%d logins recorded.', 'rgbmind-ephemere' ),
-									$login_count
+								/* translators: %d: current login count */
+								echo esc_html(
+									sprintf(
+										/* translators: %d: current login count */
+										__( '%d logins recorded.', 'rgbmind-ephemere' ),
+										absint( $login_count )
+									)
 								);
 							}
 							?>
@@ -690,13 +661,16 @@ add_action( 'init', 'rgbmind_eph_enforce_session_validity' );
  * @return string
  */
 function rgbmind_eph_custom_login_messages( $message ) {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading public query argument on wp-login.php to display session expiry notice.
 	if ( isset( $_GET['rgbmind_session_expired'] ) && '1' === sanitize_text_field( wp_unslash( $_GET['rgbmind_session_expired'] ) ) ) {
 		$message .= '<div class="message notice notice-error"><p>' .
 			esc_html__( 'Your temporary access session has expired or was revoked by an administrator.', 'rgbmind-ephemere' ) .
 			'</p></div>';
 	}
 
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading public query argument on wp-login.php to display error notice.
 	if ( isset( $_GET['rgbmind_login_error'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading public query argument on wp-login.php to display error notice.
 		$err     = sanitize_text_field( wp_unslash( $_GET['rgbmind_login_error'] ) );
 		$err_msg = '';
 
@@ -786,25 +760,16 @@ function rgbmind_eph_render_dashboard() {
 	$notice      = '';
 	$notice_type = '';
 
-	if ( 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['rgbmind_eph_settings_nonce'] ) ) {
+	if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['rgbmind_eph_settings_nonce'] ) ) {
 		if ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rgbmind_eph_settings_nonce'] ) ), 'rgbmind_eph_save_settings' ) ) {
-
-			// Action: Save Language Preference
-			if ( isset( $_POST['rgbmind_eph_save_language'] ) && isset( $_POST['rgbmind_eph_language'] ) ) {
-				$chosen_lang = sanitize_text_field( wp_unslash( $_POST['rgbmind_eph_language'] ) );
-				$supported   = rgbmind_eph_get_supported_languages();
-				if ( array_key_exists( $chosen_lang, $supported ) ) {
-					update_option( 'rgbmind_eph_language', $chosen_lang );
-					unload_textdomain( 'rgbmind-ephemere' );
-					$notice      = __( 'Language preference updated successfully.', 'rgbmind-ephemere' );
-					$notice_type = 'success';
-				}
-			}
+			do_action( 'rgbmind_eph_save_dashboard_settings' );
 		}
 	}
 
 	// 3. Query notices
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading public admin query notice parameter.
 	if ( isset( $_GET['rgbmind_notice'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading public admin query notice parameter.
 		$code = sanitize_text_field( wp_unslash( $_GET['rgbmind_notice'] ) );
 		if ( 'user_locked' === $code ) {
 			$notice      = __( 'Account locked successfully.', 'rgbmind-ephemere' );
@@ -815,7 +780,9 @@ function rgbmind_eph_render_dashboard() {
 		}
 	}
 
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading public admin query notice parameter.
 	if ( isset( $_GET['rgbmind_pro_notice'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading public admin query notice parameter.
 		$pro_code = sanitize_text_field( wp_unslash( $_GET['rgbmind_pro_notice'] ) );
 		switch ( $pro_code ) {
 			case 'activated':
@@ -838,6 +805,7 @@ function rgbmind_eph_render_dashboard() {
 	}
 
 	// Active tab determination
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading public admin tab navigation query parameter.
 	$active_tab = isset( $_GET['tab'] ) && ( 'settings' === $_GET['tab'] || 'license' === $_GET['tab'] ) ? 'settings' : 'accounts';
 	$is_pro     = rgbmind_eph_is_pro_active();
 	?>
@@ -879,10 +847,11 @@ function rgbmind_eph_render_dashboard() {
 		<!-- TAB 1: TEMPORARY ACCOUNTS -->
 		<?php if ( 'accounts' === $active_tab ) : ?>
 			<?php
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Filter is required to list configured temporary accounts.
 			$ephemeral_users = get_users(
 				array(
-					'meta_key'   => '_rgbmind_is_ephemeral',
-					'meta_value' => 1,
+					'meta_key'   => '_rgbmind_is_ephemeral', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+					'meta_value' => 1,                       // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 					'number'     => 150,
 				)
 			);
@@ -941,20 +910,20 @@ function rgbmind_eph_render_dashboard() {
 							// Status resolution
 							$status_label = __( 'Active', 'rgbmind-ephemere' );
 							$status_style = 'color: #007017; font-weight: 600;';
-							$status_icon  = '&#x2705;';
+							$status_icon  = '✅';
 
 							if ( 1 === $u_locked ) {
 								$status_label = __( 'Locked', 'rgbmind-ephemere' );
 								$status_style = 'color: #b32d2e; font-weight: 600;';
-								$status_icon  = '&#x1F512;';
+								$status_icon  = '🔒';
 							} elseif ( $u_expire > 0 && $now >= $u_expire ) {
 								$status_label = __( 'Expired', 'rgbmind-ephemere' );
 								$status_style = 'color: #996800; font-weight: 600;';
-								$status_icon  = '&#x23F0;';
+								$status_icon  = '⏰';
 							} elseif ( $u_max > 0 && $u_count >= $u_max ) {
 								$status_label = __( 'Limit reached', 'rgbmind-ephemere' );
 								$status_style = 'color: #996800; font-weight: 600;';
-								$status_icon  = '&#x26A0;&#xFE0F;';
+								$status_icon  = '⚠️';
 							}
 
 							// Toggle lock link with nonce
@@ -990,9 +959,11 @@ function rgbmind_eph_render_dashboard() {
 										<small style="color: <?php echo ( $now >= $u_expire ) ? '#d63638' : '#646970'; ?>;">
 											<?php
 											if ( $now >= $u_expire ) {
-												printf( esc_html__( 'Expired %s ago', 'rgbmind-ephemere' ), esc_html( human_time_diff( $u_expire, $now ) ) );
+												/* translators: %s: relative time elapsed since expiration (e.g. 2 hours) */
+												echo esc_html( sprintf( __( 'Expired %s ago', 'rgbmind-ephemere' ), human_time_diff( $u_expire, $now ) ) );
 											} else {
-												printf( esc_html__( 'in %s', 'rgbmind-ephemere' ), esc_html( human_time_diff( $now, $u_expire ) ) );
+												/* translators: %s: relative time until expiration (e.g. 3 days) */
+												echo esc_html( sprintf( __( 'in %s', 'rgbmind-ephemere' ), human_time_diff( $now, $u_expire ) ) );
 											}
 											?>
 										</small>
@@ -1007,13 +978,16 @@ function rgbmind_eph_render_dashboard() {
 									<?php if ( $u_last > 0 ) : ?>
 										<br />
 										<small style="color: #646970;">
-											<?php printf( esc_html__( 'Last: %s ago', 'rgbmind-ephemere' ), esc_html( human_time_diff( $u_last, $now ) ) ); ?>
+											<?php
+											/* translators: %s: relative time since last login (e.g. 5 minutes) */
+											echo esc_html( sprintf( __( 'Last: %s ago', 'rgbmind-ephemere' ), human_time_diff( $u_last, $now ) ) );
+											?>
 										</small>
 									<?php endif; ?>
 								</td>
 								<td>
 									<span style="<?php echo esc_attr( $status_style ); ?>">
-										<?php echo $status_icon . ' ' . esc_html( $status_label ); ?>
+										<?php echo esc_html( $status_icon ) . ' ' . esc_html( $status_label ); ?>
 									</span>
 								</td>
 								<td style="text-align: right;">
@@ -1044,44 +1018,36 @@ function rgbmind_eph_render_dashboard() {
 			<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; max-width: 1200px;">
 				<!-- Main Column -->
 				<div>
-					<!-- Language Settings Box -->
+					<!-- Language & Localization Info Box -->
 					<div class="card" style="margin: 0 0 20px 0; padding: 20px; max-width: none;">
 						<h2 style="margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #f0f0f1;">
-							🌐 <?php esc_html_e( 'Plugin Language Settings', 'rgbmind-ephemere' ); ?>
+							🌐 <?php esc_html_e( 'Language & Localization', 'rgbmind-ephemere' ); ?>
 						</h2>
 						<p style="color: #50575e; font-size: 13.5px; margin-top: 10px;">
-							<?php esc_html_e( 'Choose whether RGBmind Ephemere should automatically match your WordPress locale or use a specific language.', 'rgbmind-ephemere' ); ?>
+							<?php esc_html_e( 'RGBmind Ephemere is fully internationalized and automatically follows your native WordPress language settings.', 'rgbmind-ephemere' ); ?>
 						</p>
-
-						<form method="post" action="">
-							<?php wp_nonce_field( 'rgbmind_eph_save_settings', 'rgbmind_eph_settings_nonce' ); ?>
-							<table class="form-table" role="presentation">
-								<tr>
-									<th scope="row">
-										<label for="rgbmind_eph_language"><?php esc_html_e( 'Select Language', 'rgbmind-ephemere' ); ?></label>
-									</th>
-									<td>
-										<select name="rgbmind_eph_language" id="rgbmind_eph_language" style="min-width: 280px;">
-											<?php
-											$current_lang = get_option( 'rgbmind_eph_language', 'auto' );
-											$supported    = rgbmind_eph_get_supported_languages();
-											foreach ( $supported as $lang_code => $lang_label ) :
-											?>
-												<option value="<?php echo esc_attr( $lang_code ); ?>" <?php selected( $current_lang, $lang_code ); ?>>
-													<?php echo esc_html( $lang_label ); ?>
-												</option>
-											<?php endforeach; ?>
-										</select>
-										<p class="description">
-											<?php esc_html_e( 'Supported: English (US), Italian, Spanish, French, German, and Brazilian Portuguese.', 'rgbmind-ephemere' ); ?>
-										</p>
-									</td>
-								</tr>
-							</table>
-							<p class="submit" style="margin-bottom: 0; padding-bottom: 0;">
-								<input type="submit" name="rgbmind_eph_save_language" class="button button-secondary" value="<?php esc_attr_e( 'Save Language Preference', 'rgbmind-ephemere' ); ?>" />
-							</p>
-						</form>
+						<p style="color: #50575e; font-size: 13px; margin-bottom: 6px;">
+							<?php esc_html_e( 'To change your language, use the standard WordPress settings:', 'rgbmind-ephemere' ); ?>
+						</p>
+						<ul style="list-style: disc; margin-left: 20px; color: #50575e; font-size: 13px; line-height: 1.8;">
+							<li>
+								<strong><?php esc_html_e( 'Site-wide language:', 'rgbmind-ephemere' ); ?></strong>
+								<a href="<?php echo esc_url( admin_url( 'options-general.php' ) ); ?>"><?php esc_html_e( 'Settings → General → Site Language', 'rgbmind-ephemere' ); ?></a>
+							</li>
+							<li>
+								<strong><?php esc_html_e( 'Individual profile language:', 'rgbmind-ephemere' ); ?></strong>
+								<a href="<?php echo esc_url( admin_url( 'profile.php' ) ); ?>"><?php esc_html_e( 'Users → Profile → Language', 'rgbmind-ephemere' ); ?></a>
+							</li>
+						</ul>
+						<p style="color: #646970; font-size: 12.5px; margin-top: 15px; margin-bottom: 0;">
+							<?php
+							printf(
+								/* translators: %s: translate.wordpress.org link */
+								esc_html__( 'Community translations and additional languages are managed through %s.', 'rgbmind-ephemere' ),
+								'<a href="https://translate.wordpress.org/projects/wp-plugins/rgbmind-ephemere/" target="_blank" rel="noopener noreferrer">translate.wordpress.org</a>'
+							);
+							?>
+						</p>
 					</div>
 
 					<!-- PRO Hook for Companion Add-on Settings -->
