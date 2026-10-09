@@ -1,0 +1,590 @@
+# German translation for RGBmind Ephemere.
+# Copyright (C) 2026 RGBmind
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: RGBmind Ephemere 1.2.0\n"
+"Report-Msgid-Bugs-To: https://rgbmind.com\n"
+"POT-Creation-Date: 2026-10-05 14:00:00+00:00\n"
+"PO-Revision-Date: 2026-10-05 14:00:00+00:00\n"
+"Last-Translator: RGBmind Team <support@rgbmind.com>\n"
+"Language-Team: German <de@rgbmind.com>\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: rgbmind-ephemere\n"
+
+msgid "%1$d of %2$d logins used (%3$d remaining)."
+msgstr "%1$d von %2$d Anmeldungen verwendet (%3$d verbleibend)."
+
+msgid "%d logins recorded."
+msgstr "%d Anmeldungen aufgezeichnet."
+
+msgid "%d/%d logins"
+msgstr "%d/%d Anmeldungen"
+
+msgid "1 hour"
+msgstr "1 Stunde"
+
+msgid "1. Select User"
+msgstr "1. Benutzer auswählen"
+
+msgid "2 hours (recommended)"
+msgstr "2 Stunden (empfohlen)"
+
+msgid "2. Enable Restrictions"
+msgstr "2. Einschränkungen aktivieren"
+
+msgid "24 hours"
+msgstr "24 Stunden"
+
+msgid "3. Set Expiration & Limits"
+msgstr "3. Ablauf & Limits festlegen"
+
+msgid "4. Monitor & Lock"
+msgstr "4. Überwachen & Sperren"
+
+msgid "6 hours"
+msgstr "6 Stunden"
+
+msgid "<strong>ACCESS DENIED:</strong> The temporary validity period for this account has expired. Access has been revoked."
+msgstr "<strong>ZUGRIFF VERWEIGERT:</strong> Die temporäre Gültigkeitsdauer dieses Kontos ist abgelaufen. Der Zugriff wurde widerrufen."
+
+msgid "<strong>ACCESS DENIED:</strong> This account has reached the maximum number of allowed logins."
+msgstr "<strong>ZUGRIFF VERWEIGERT:</strong> Dieses Konto hat die maximale Anzahl erlaubter Anmeldungen erreicht."
+
+msgid "<strong>ACCESS DENIED:</strong> This temporary account is currently locked. Please contact the site administrator."
+msgstr "<strong>ZUGRIFF VERWEIGERT:</strong> Dieses temporäre Konto ist derzeit gesperrt. Bitte kontaktieren Sie den Website-Administrator."
+
+msgid "Access Audit Log"
+msgstr "Zugriffs-Audit-Protokoll"
+
+msgid "Access is revoked manually or due to restriction limits."
+msgstr "Der Zugriff wird manuell oder aufgrund von Beschränkungslimits widerrufen."
+
+msgid "Access will be automatically denied after this date and time. Site timezone: %s. Leave empty for no time limit."
+msgstr "Der Zugriff wird nach diesem Datum und dieser Uhrzeit automatisch verweigert. Website-Zeitzone: %s. Leer lassen für unbegrenzt."
+
+msgid "Account locked successfully."
+msgstr "Konto erfolgreich gesperrt."
+
+msgid "Account unlocked successfully."
+msgstr "Konto erfolgreich entsperrt."
+
+msgid "Activate PRO License"
+msgstr "PRO-Lizenz aktivieren"
+
+msgid "Activate PRO license to unlock →"
+msgstr "PRO-Lizenz aktivieren zum Freischalten →"
+
+msgid "Active"
+msgstr "Aktiv"
+
+msgid "Active Key"
+msgstr "Aktiver Schlüssel"
+
+msgid "Active expired sessions are revoked immediately. Zero custom tables created, zero external calls, and full GDPR compliance."
+msgstr "Aktive abgelaufene Sitzungen werden sofort widerrufen. Keine benutzerdefinierten Tabellen, keine externen Aufrufe und volle DSGVO-Konformität."
+
+msgid "Active one-time link..."
+msgstr "Aktiver Einmal-Link..."
+
+msgid "Advanced Options & Notifications (PRO)"
+msgstr "Erweiterte Optionen & Benachrichtigungen (PRO)"
+
+msgid "Advanced temporary login and timed access manager for WordPress users. Set expiration dates, max login limits, one-click magic links, and instant account locking with zero custom database tables and zero external API calls."
+msgstr "Fortschrittlicher Manager für temporäre Anmeldungen und zeitgesteuerte Zugriffe für WordPress-Benutzer. Legen Sie Ablaufdaten, Anmeldelimits, Ein-Klick-Magic-Links und sofortige Kontosperrung fest – ohne eigene Datenbanktabellen und ohne externe API-Aufrufe."
+
+msgid "Alert Email Recipient"
+msgstr "Empfänger der Alarm-E-Mail"
+
+msgid "All available logins have been used (%1$d of %2$d)."
+msgstr "Alle verfügbaren Anmeldungen wurden aufgebraucht (%1$d von %2$d)."
+
+msgid "An active temporary link already exists in the system (expires on %s). Generating a new link will revoke the previous one."
+msgstr "Ein aktiver temporärer Link existiert bereits im System (läuft ab am %s). Das Generieren eines neuen Links widerruft den vorherigen."
+
+msgid "Are you sure you want to deactivate the PRO license on this site?"
+msgstr "Möchten Sie die PRO-Lizenz auf dieser Website wirklich deaktivieren?"
+
+msgid "Attention Administrator,\\n\\nThe temporary account for user \\\"%1\\$s\\\" (%2\\$s) has been locked or expired.\\n\\n- Reason: %3\\$s\\n- Date & Time: %4\\$s\\n- User ID: %5\\$d\\n\\nYou can review or reactivate this account from the admin dashboard:\\n%6\\$s\\n\\n--\\nRGBmind Ephemere Security Alert"
+msgstr "Achtung Administrator,\n\nDas temporäre Konto für Benutzer \"%1$s\" (%2$s) wurde gesperrt oder ist abgelaufen.\n\n- Grund: %3$s\n- Datum & Uhrzeit: %4$s\n- Benutzer-ID: %5$d\n\nSie können dieses Konto im Admin-Dashboard überprüfen oder reaktivieren:\n%6$s\n\n--\nRGBmind Ephemere Sicherheitswarnung"
+
+msgid "Attention: Expired on %s."
+msgstr "Achtung: Abgelaufen am %s."
+
+msgid "Automatic"
+msgstr "Automatisch"
+
+msgid "Automatic (Follow WordPress language)"
+msgstr "Automatisch (Folgt der WordPress-Sprache)"
+
+msgid "Available in PRO version →"
+msgstr "Verfügbar in der PRO-Version →"
+
+msgid "Choose whether RGBmind Ephemere should automatically match your WordPress locale or use a specific language."
+msgstr "Wählen Sie, ob RGBmind Ephemere die WordPress-Sprache automatisch übernehmen oder eine bestimmte Sprache verwenden soll."
+
+msgid "Connection error while generating magic link."
+msgstr "Verbindungsfehler beim Generieren des Magic-Links."
+
+msgid "Copied!"
+msgstr "Kopiert!"
+
+msgid "Copy"
+msgstr "Kopieren"
+
+msgid "Creates an encrypted, single-use URL that allows immediate login without a password for contractors or developers."
+msgstr "Erstellt eine verschlüsselte Einmal-URL, die Dienstleistern oder Entwicklern eine sofortige Anmeldung ohne Passwort ermöglicht."
+
+msgid "Cybersecurity Hardening:"
+msgstr "Cybersecurity-Härtung:"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Date & Time"
+msgstr "Datum & Uhrzeit"
+
+msgid "Deactivate License"
+msgstr "Lizenz deaktivieren"
+
+msgid "Define an expiration date and time, or set the maximum number of logins allowed before automatic lockout."
+msgstr "Legen Sie ein Ablaufdatum und eine Uhrzeit fest oder bestimmen Sie die maximale Anzahl an Anmeldungen vor der Sperrung."
+
+msgid "Detailed Audit Log:"
+msgstr "Detailliertes Audit-Protokoll:"
+
+msgid "Direct technical support from RGBmind developers."
+msgstr "Direkter technischer Support von den RGBmind-Entwicklern."
+
+msgid "Do not show again"
+msgstr "Nicht mehr anzeigen"
+
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgid "Email"
+msgstr "E-Mail"
+
+msgid "Email & Webhook notifications upon expiration."
+msgstr "E-Mail- und Webhook-Benachrichtigungen bei Ablauf."
+
+msgid "Email address to receive alerts (defaults to site admin email)."
+msgstr "E-Mail-Adresse für Alarmmeldungen (Standard ist Administrator-E-Mail)."
+
+msgid "Enable Restrictions"
+msgstr "Einschränkungen aktivieren"
+
+msgid "Enable temporary access restrictions for this user"
+msgstr "Temporäre Zugriffsbeschränkungen für diesen Benutzer aktivieren"
+
+msgid "Enter License Key"
+msgstr "Lizenzschlüssel eingeben"
+
+msgid "Enter the key received upon purchase (e.g. RGBEPH-PRO-AGENCY-2026)."
+msgstr "Geben Sie den beim Kauf erhaltenen Schlüssel ein (z. B. RGBEPH-PRO-AGENCY-2026)."
+
+msgid "Enter your License Key below to unlock the One-Click Magic Link generator, Audit Log with anonymized IPs, and instant security email alerts."
+msgstr "Geben Sie Ihren Lizenzschlüssel unten ein, um den Magic-Link-Generator, das Audit-Protokoll mit anonymisierten IPs und E-Mail-Alarme freizuschalten."
+
+msgid "Enter your key starting with \"RGB-\" (e.g. RGB-PRO-AGENCY-2026)."
+msgstr "Geben Sie Ihren Schlüssel beginnend mit „RGB-“ ein (z. B. RGB-PRO-AGENCY-2026)."
+
+msgid "Error generating magic link."
+msgstr "Fehler beim Generieren des Magic-Links."
+
+msgid "Error:"
+msgstr "Fehler:"
+
+msgid "Expiration Date & Time"
+msgstr "Ablaufdatum & -uhrzeit"
+
+msgid "Expiration Date/Time"
+msgstr "Ablaufdatum/-uhrzeit"
+
+msgid "Expiration date and time reached"
+msgstr "Ablaufdatum und -uhrzeit erreicht"
+
+msgid "Expired"
+msgstr "Abgelaufen"
+
+msgid "Expired %s ago"
+msgstr "Vor %s abgelaufen"
+
+msgid "First Installation"
+msgstr "Erste Installation"
+
+msgid "Generate secure single-use links for direct access without sharing passwords. "
+msgstr "Generieren Sie sichere Einmal-Links für direkten Zugriff ohne Weitergabe von Passwörtern. "
+
+msgid "Generating..."
+msgstr "Wird generiert..."
+
+msgid "Go to User Management"
+msgstr "Zur Benutzerverwaltung gehen"
+
+msgid "Go to Users Screen"
+msgstr "Zum Benutzer-Bildschirm wechseln"
+
+msgid "History of last 10 logins with GDPR-anonymized IP."
+msgstr "Verlauf der letzten 10 Anmeldungen mit DSGVO-anonymisierter IP."
+
+msgid "IP Address (Anonymized)"
+msgstr "IP-Adresse (anonymisiert)"
+
+msgid "Immediate Alerts:"
+msgstr "Sofortige Alarme:"
+
+msgid "Immediate login without sharing passwords."
+msgstr "Sofortige Anmeldung ohne Weitergabe von Passwörtern."
+
+msgid "In the \"RGBmind Ephemere\" box, check \"Enable temporary access restrictions\" to activate checks."
+msgstr "Aktivieren Sie im Feld „RGBmind Ephemere“ die Option „Temporäre Zugriffsbeschränkungen aktivieren“."
+
+msgid "Instant Account Lock"
+msgstr "Sofortige Kontosperre"
+
+msgid "Instant activation and 100% money-back guarantee."
+msgstr "Sofortige Aktivierung und 100 % Geld-zurück-Garantie."
+
+msgid "Instantly block access for this user account"
+msgstr "Den Zugriff für dieses Benutzerkonto sofort sperren"
+
+msgid "Invalid or already consumed magic login link."
+msgstr "Ungültiger oder bereits verbrauchter Magic-Login-Link."
+
+msgid "Invalid user ID."
+msgstr "Ungültige Benutzer-ID."
+
+msgid "Language preference updated successfully."
+msgstr "Spracheinstellung erfolgreich aktualisiert."
+
+msgid "Last: %s ago"
+msgstr "Zuletzt: vor %s"
+
+msgid "Learn about PRO"
+msgstr "Mehr über PRO erfahren"
+
+msgid "License & PRO Settings"
+msgstr "Lizenz & PRO-Einstellungen"
+
+msgid "License Key"
+msgstr "Lizenzschlüssel"
+
+msgid "License Management"
+msgstr "Lizenzverwaltung"
+
+msgid "Limit reached"
+msgstr "Limit erreicht"
+
+msgid "Lock"
+msgstr "Sperren"
+
+msgid "Locked"
+msgstr "Gesperrt"
+
+msgid "Login Count"
+msgstr "Anzahl Anmeldungen"
+
+msgid "Login Limit Reached"
+msgstr "Anmeldelimit erreicht"
+
+msgid "Logins Used"
+msgstr "Verwendete Anmeldungen"
+
+msgid "Logins exhausted"
+msgstr "Anmeldungen aufgebraucht"
+
+msgid "Magic Link Expiration"
+msgstr "Ablaufzeit des Magic-Links"
+
+msgid "Manage All WordPress Users"
+msgstr "Alle WordPress-Benutzer verwalten"
+
+msgid "Manage Users"
+msgstr "Benutzer verwalten"
+
+msgid "Manual lockout applied by administrator"
+msgstr "Manuelle Sperre durch Administrator angewendet"
+
+msgid "Maximum Number of Logins"
+msgstr "Maximale Anzahl an Anmeldungen"
+
+msgid "Maximum allowed logins reached"
+msgstr "Maximale Anzahl erlaubter Anmeldungen erreicht"
+
+msgid "Maximum time before an unused generated link becomes invalid."
+msgstr "Maximale Zeit, bevor ein ungenutzter Link ungültig wird."
+
+msgid "Method"
+msgstr "Methode"
+
+msgid "Monitor & Lock"
+msgstr "Überwachen & Sperren"
+
+msgid "Monitor status in the Users table or instantly block access at any time using the Instant Lock switch."
+msgstr "Überwachen Sie den Status in der Benutzertabelle oder sperren Sie den Zugriff jederzeit sofort per Schalter."
+
+msgid "Navigate to Users > All Users and click \"Edit\" on the user account you want to make temporary."
+msgstr "Gehen Sie zu Benutzer > Alle Benutzer und klicken Sie beim gewünschten Konto auf „Bearbeiten“."
+
+msgid "No Temporary Accounts Found"
+msgstr "Keine temporären Konten gefunden"
+
+msgid "No login activity recorded in the audit log for this user yet."
+msgstr "Bisher keine Anmeldeaktivitäten im Audit-Protokoll für diesen Benutzer aufgezeichnet."
+
+msgid "No time limit"
+msgstr "Kein Zeitlimit"
+
+msgid "None of your users are currently configured as temporary accounts. You can edit any existing user profile to enable time limits and access restrictions."
+msgstr "Keiner Ihrer Benutzer ist derzeit als temporäres Konto konfiguriert. Sie können jedes Benutzerprofil bearbeiten, um Limits zu aktivieren."
+
+msgid "Offline validation with 100% native WordPress code."
+msgstr "Offline-Validierung mit 100 % nativem WordPress-Code."
+
+msgid "One-Click Login Link"
+msgstr "Ein-Klick-Anmeldelink"
+
+msgid "One-Click Login Link:"
+msgstr "Ein-Klick-Anmeldelink:"
+
+msgid "One-Click magic login requires an active PRO license on this site."
+msgstr "Die Ein-Klick-Magic-Anmeldung erfordert eine aktive PRO-Lizenz auf dieser Website."
+
+msgid "Open Ephemere Dashboard"
+msgstr "Ephemere-Dashboard öffnen"
+
+msgid "PRO Audit Trail:"
+msgstr "PRO-Audit-Trail:"
+
+msgid "PRO Feature:"
+msgstr "PRO-Funktion:"
+
+msgid "PRO LICENSE ACTIVE & VERIFIED"
+msgstr "PRO-LIZENZ AKTIV & VERIFIZIERT"
+
+msgid "PRO license deactivated. The plugin has returned to the Free version."
+msgstr "PRO-Lizenz deaktiviert. Das Plugin ist zur kostenlosen Version zurückgekehrt."
+
+msgid "Permission denied."
+msgstr "Zugriff verweigert."
+
+msgid "Plugin Language Settings"
+msgstr "Plugin-Spracheinstellungen"
+
+msgid "Priority Support:"
+msgstr "Prioritäts-Support:"
+
+msgid "Purchase PRO License →"
+msgstr "PRO-Lizenz erwerben →"
+
+msgid "Quick Actions"
+msgstr "Schnellaktionen"
+
+msgid "RGBmind Ephemere"
+msgstr "RGBmind Ephemere"
+
+msgid "RGBmind Ephemere (PRO)"
+msgstr "RGBmind Ephemere (PRO)"
+
+msgid "RGBmind Ephemere PRO is designed specifically for web agencies, WordPress maintenance professionals, and cybersecurity teams."
+msgstr "RGBmind Ephemere PRO wurde speziell für Webagenturen, WordPress-Wartungsprofis und Cybersecurity-Teams entwickelt."
+
+msgid "RGBmind Ephemere – License & PRO Options"
+msgstr "RGBmind Ephemere – Lizenz & PRO-Optionen"
+
+msgid "RGBmind Ephemere – Management Dashboard"
+msgstr "RGBmind Ephemere – Verwaltungs-Dashboard"
+
+msgid "RGBmind Ephemere – Settings & License"
+msgstr "RGBmind Ephemere – Einstellungen & Lizenz"
+
+msgid "RGBmind Ephemere – Temporary Access Management"
+msgstr "RGBmind Ephemere – Temporäre Zugriffsverwaltung"
+
+msgid "RGBmind Ephemere – Temporary Logins & Timed Access Manager"
+msgstr "RGBmind Ephemere – Temporäre Anmeldungen & Zeitgesteuerter Zugriffsmanager"
+
+msgid "Reset login counter on save (restore to 0)"
+msgstr "Anmeldezähler beim Speichern zurücksetzen (auf 0 setzen)"
+
+msgid "Revoke Active Link"
+msgstr "Aktiven Link widerrufen"
+
+msgid "STATUS: FREE VERSION"
+msgstr "STATUS: KOSTENLOSE VERSION"
+
+msgid "Save Advanced Options"
+msgstr "Erweiterte Optionen speichern"
+
+msgid "Save Language Preference"
+msgstr "Spracheinstellung speichern"
+
+msgid "Scheduled expiration: %1$s (in about %2$s)."
+msgstr "Geplanter Ablauf: %1$s (in etwa %2$s)."
+
+msgid "Security Email Alerts"
+msgstr "Sicherheits-E-Mail-Alarme"
+
+msgid "Security Status:"
+msgstr "Sicherheitsstatus:"
+
+msgid "Select Language"
+msgstr "Sprache auswählen"
+
+msgid "Select User"
+msgstr "Benutzer auswählen"
+
+msgid "Send JSON payload via HTTP POST for external integrations (Slack, Discord, Zapier) upon account lockout."
+msgstr "JSON-Nutzlast über HTTP POST für externe Integrationen (Slack, Discord, Zapier) bei Kontosperrung senden."
+
+msgid "Send an immediate email to the administrator when a temporary account expires or is locked."
+msgstr "Sofortige E-Mail an den Administrator senden, wenn ein temporäres Konto abläuft oder gesperrt wird."
+
+msgid "Set Expiration & Limits"
+msgstr "Ablauf & Limits festlegen"
+
+msgid "Settings & PRO License"
+msgstr "Einstellungen & PRO-Lizenz"
+
+msgid "Settings / License"
+msgstr "Einstellungen / Lizenz"
+
+msgid "Settings updated successfully."
+msgstr "Einstellungen erfolgreich aktualisiert."
+
+msgid "Standard Account (No restrictions)"
+msgstr "Standard-Konto (Keine Einschränkungen)"
+
+msgid "Standard Password"
+msgstr "Standard-Passwort"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Success"
+msgstr "Erfolg"
+
+msgid "Supported: English (US), Italian, Spanish, French, German, and Brazilian Portuguese."
+msgstr "Unterstützt: Englisch (US), Italienisch, Spanisch, Französisch, Deutsch und brasilianisches Portugiesisch."
+
+msgid "Temporary Access"
+msgstr "Temporärer Zugriff"
+
+msgid "Temporary Account"
+msgstr "Temporäres Konto"
+
+msgid "Temporary Accounts"
+msgstr "Temporäre Konten"
+
+msgid "Temporary Active"
+msgstr "Temporär aktiv"
+
+msgid "The account associated with this link is locked or expired."
+msgstr "Das mit diesem Link verknüpfte Konto ist gesperrt oder abgelaufen."
+
+msgid "The account meets temporary access criteria and login is allowed."
+msgstr "Das Konto erfüllt die temporären Zugriffskriterien und die Anmeldung ist erlaubt."
+
+msgid "The expiration date and time have passed."
+msgstr "Das Ablaufdatum und die Uhrzeit sind überschritten."
+
+msgid "This account has no time or login restrictions."
+msgstr "Dieses Konto hat keine zeitlichen oder anmeldebezogenen Beschränkungen."
+
+msgid "This feature requires an active PRO license."
+msgstr "Diese Funktion erfordert eine aktive PRO-Lizenz."
+
+msgid "This magic login link has expired. Please request a new one from your administrator."
+msgstr "Dieser Magic-Login-Link ist abgelaufen. Bitte fordern Sie einen neuen beim Administrator an."
+
+msgid "Total temporary accounts configured: %d."
+msgstr "Insgesamt konfigurierte temporäre Konten: %d."
+
+msgid "Tracks the last 10 logins with GDPR-anonymized IP addresses. "
+msgstr "Protokolliert die letzten 10 Anmeldungen mit DSGVO-anonymisierten IP-Adressen. "
+
+msgid "Unauthorized operation."
+msgstr "Unbefugte Operation."
+
+msgid "Unlimited"
+msgstr "Unbegrenzt"
+
+msgid "Unlock"
+msgstr "Entsperren"
+
+msgid "Unlock passwordless One-Click Magic Links, GDPR-compliant Audit Log with anonymized IPs, and instant security email alerts."
+msgstr "Schalten Sie passwortlose Ein-Klick-Links, DSGVO-konforme Audit-Logs mit anonymisierten IPs und E-Mail-Alarme frei."
+
+msgid "Upgrade to RGBmind Ephemere PRO for Agency-Grade Features"
+msgstr "Upgrade auf RGBmind Ephemere PRO für Funktionen auf Agenturniveau"
+
+msgid "User not found."
+msgstr "Benutzer nicht gefunden."
+
+msgid "Username / User"
+msgstr "Benutzername / Benutzer"
+
+msgid "Webhook URL (Optional)"
+msgstr "Webhook-URL (optional)"
+
+msgid "Welcome to RGBmind Ephemere – Quick Start Guide"
+msgstr "Willkommen bei RGBmind Ephemere – Schnellstartanleitung"
+
+msgid "When checked, any login attempt will be immediately rejected with an error regardless of expiration or remaining logins."
+msgstr "Wenn aktiviert, wird jeder Anmeldeversuch sofort mit einem Fehler abgewiesen."
+
+msgid "When enabled, the user will be subject to expiration time, login limits, and instant lockout checks."
+msgstr "Wenn aktiviert, unterliegt der Benutzer Ablaufzeiten, Anmeldelimits und sofortigen Sperrprüfungen."
+
+msgid "Why upgrade to PRO?"
+msgstr "Warum auf PRO upgraden?"
+
+msgid "You do not have sufficient permissions to access this page."
+msgstr "Sie haben nicht die erforderlichen Berechtigungen, um auf diese Seite zuzugreifen."
+
+msgid "Your license is active and validated locally with full security."
+msgstr "Ihre Lizenz ist aktiv und lokal mit voller Sicherheit validiert."
+
+msgid "Your license is active and validated locally with zero external network overhead."
+msgstr "Ihre Lizenz ist aktiv und lokal validiert ohne externen Netzwerkaufwand."
+
+msgid "Your lightweight, secure, and local system for managing temporary and time-limited access."
+msgstr "Ihr leichtes, sicheres und lokales System zur Verwaltung temporärer und zeitlich begrenzter Zugriffe."
+
+msgid "Your temporary access session has expired or was revoked by an administrator."
+msgstr "Ihre temporäre Zugriffssitzung ist abgelaufen oder wurde von einem Administrator widerrufen."
+
+msgid "Zero Server Overhead:"
+msgstr "Kein Server-Overhead:"
+
+msgid "[%1$s] Security Alert: Temporary Account \"%2$s\" Locked/Expired"
+msgstr "[%1$s] Sicherheitswarnung: Temporäres Konto „%2$s“ gesperrt/abgelaufen"
+
+msgid "allowed logins (0 = unlimited)."
+msgstr "erlaubte Anmeldungen (0 = unbegrenzt)."
+
+msgid "expires in %s"
+msgstr "läuft ab in %s"
+
+msgid "in %s"
+msgstr "in %s"
+
+msgid "⚡ Generate One-Click Magic Link"
+msgstr "⚡ Ein-Klick-Magic-Link generieren"
+
+msgid "❌ Invalid license key. Please ensure your key conforms to RGBEPH-PRO-XXXX-XXXX-XXXX format."
+msgstr "❌ Ungültiger Lizenzschlüssel. Bitte stellen Sie sicher, dass Ihr Schlüssel dem Format RGBEPH-PRO-XXXX-XXXX-XXXX entspricht."
+
+msgid "❌ Invalid license key. Please ensure your key starts with \"RGB-\" and contains at least 16 characters."
+msgstr "❌ Ungültiger Lizenzschlüssel. Bitte stellen Sie sicher, dass Ihr Schlüssel mit „RGB-“ beginnt und mindestens 16 Zeichen enthält."
+
+msgid "🌐 Automatic (Follow WordPress: %s)"
+msgstr "🌐 Automatisch (Folgt WordPress: %s)"
+
+msgid "🎉 Congratulations! PRO license activated successfully. All premium features are now unlocked."
+msgstr "🎉 Glückwunsch! PRO-Lizenz erfolgreich aktiviert. Alle Premium-Funktionen sind jetzt freigeschaltet."

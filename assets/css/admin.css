@@ -1,0 +1,36 @@
+/**
+ * RGBmind Ephemere - Administrative Stylesheet
+ *
+ * @package RGBmind_Ephemere
+ */
+
+/* Security Status Badges */
+.rgbmind-badge.rgbmind-status-neutral {
+	background: #f0f0f1;
+	color: #50575e;
+	border: 1px solid #c3c4c7;
+}
+
+.rgbmind-badge.rgbmind-status-active {
+	background: #edfaef;
+	color: #007017;
+	border: 1px solid #b7e1cd;
+}
+
+.rgbmind-badge.rgbmind-status-locked {
+	background: #fcf0f1;
+	color: #d63638;
+	border: 1px solid #f5c2c7;
+}
+
+.rgbmind-badge.rgbmind-status-expired {
+	background: #fff8e5;
+	color: #996800;
+	border: 1px solid #fcd34d;
+}
+
+.rgbmind-badge.rgbmind-status-exhausted {
+	background: #fff8e5;
+	color: #996800;
+	border: 1px solid #fcd34d;
+}
