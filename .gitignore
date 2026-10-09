@@ -14,5 +14,6 @@ ehthumbs.db
 *.zip
 *.tar.gz
 
-# Local logs
+# Local logs and test runners
 *.log
+test-runner.php
