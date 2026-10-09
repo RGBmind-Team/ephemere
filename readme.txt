@@ -47,7 +47,7 @@ For web agencies and IT maintenance professionals requiring advanced capabilitie
 * **🔔 Real-Time Security Email & Webhook Alerts**:
   Receive immediate email notifications whenever a temporary account expires, reaches its login cap, or is locked out. Supports HTTP Webhooks for Slack, Discord, Zapier, or Make integrations.
 
-Visit [rgbmind.com](https://rgbmind.com) to learn more about the PRO companion add-on.
+Visit [rgbmind.com/ephemere](https://rgbmind.com/ephemere/) to learn more about the PRO companion add-on.
 
 == Installation ==
 
