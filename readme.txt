@@ -78,6 +78,10 @@ No. All fields and handlers enforce strict `current_user_can('promote_users')` p
 = What is RGBmind Ephemere PRO? =
 RGBmind Ephemere PRO is a separate commercial add-on plugin for agencies needing passwordless One-Click Magic Links, GDPR access audit trails, and instant email/webhook security alerts. It installs as a companion plugin alongside this free core plugin.
 
+== Screenshots ==
+
+1. Temporary access restrictions and security status panel in WordPress user profile edit screen.
+
 == Changelog ==
 
 = 1.2.1 =
