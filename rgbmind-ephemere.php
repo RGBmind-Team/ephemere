@@ -1121,7 +1121,7 @@ function rgbmind_eph_render_dashboard() {
 							<li><strong>✔ <?php esc_html_e( '100% Free Core:', 'rgbmind-ephemere' ); ?></strong> <?php esc_html_e( 'Expiration dates, login counters, instant lockouts.', 'rgbmind-ephemere' ); ?></li>
 							<li><strong>✔ <?php esc_html_e( 'Session Revocation:', 'rgbmind-ephemere' ); ?></strong> <?php esc_html_e( 'Active expired sessions terminated in real time.', 'rgbmind-ephemere' ); ?></li>
 							<li><strong>✔ <?php esc_html_e( 'Clean Architecture:', 'rgbmind-ephemere' ); ?></strong> <?php esc_html_e( 'Uses standard WordPress user metadata.', 'rgbmind-ephemere' ); ?></li>
-							<li><strong>✔ <?php esc_html_e( 'Internationalized:', 'rgbmind-ephemere' ); ?></strong> <?php esc_html_e( '6 languages supported out of the box.', 'rgbmind-ephemere' ); ?></li>
+							<li><strong>✔ <?php esc_html_e( 'Translation Ready:', 'rgbmind-ephemere' ); ?></strong> <?php esc_html_e( 'Fully internationalized with native WordPress localization standards.', 'rgbmind-ephemere' ); ?></li>
 						</ul>
 
 						<div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #f0f0f1; text-align: center;">

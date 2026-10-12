@@ -26,7 +26,7 @@ The plugin is 100% free, fully functional, and unrestricted. For advanced agency
 * **Instant Account Lockout**: Instantly revoke access with a single checkbox toggle, without altering user passwords or deleting accounts.
 * **Access Monitoring**: Real-time read-only view of login counts and last login timestamp, with an option to reset the counter when re-enabling access.
 * **Real-Time Active Session Invalidation**: If an active temporary user is browsing the admin dashboard when their expiration time arrives, their session and authentication cookies are revoked immediately.
-* **Multi-Language & i18n Ready**: Fully internationalized with POT template, ready for community translations via translate.wordpress.org, automatically adapting to your site and user profile locale.
+* **Translation Ready (i18n)**: Fully internationalized with POT template included, adhering to WordPress core localization standards for community translations via translate.wordpress.org.
 
 ### Architecture & Cybersecurity
 
@@ -61,7 +61,7 @@ Visit [rgbmind.com/ephemere](https://rgbmind.com/ephemere/) to learn more about 
 == Frequently Asked Questions ==
 
 = Is RGBmind Ephemere free to use? =
-Yes, 100%. All core features—expiration schedules, login limits, instant lockout, real-time session termination, user table status columns, and multilingual support—are completely free and never restricted.
+Yes, 100%. All core features—expiration schedules, login limits, instant lockout, real-time session termination, user table status columns, and translation readiness—are completely free and never restricted.
 
 = How is timezone handled for expiration? =
 The entered date and time are converted to UTC Unix timestamps based on your site's timezone setting in Settings > General. Every login check compares the current Unix timestamp against the expiration timestamp.
@@ -81,31 +81,12 @@ RGBmind Ephemere PRO is a separate commercial add-on plugin for agencies needing
 == Changelog ==
 
 = 1.2.1 =
-* 100% WordPress.org compliant architecture: clean separation of free core features and commercial companion add-on.
-* Progressive version display: Added visible version badges across the administrative dashboard and user profile management sections.
-* Aligned localization with WordPress.org standards: removed redundant load_plugin_textdomain for seamless core JIT translation loading.
-* Included official .pot translation template; translations managed centrally via translate.wordpress.org.
-* Seamless native localization: automatically adheres to site language (Settings > General) and individual profile language (Users > Profile).
-* Expanded automated test runner to comprehensive test suites.
-* Verified compatibility with WordPress 6.7+ and PHP 8.2.
-
-= 1.2.0 =
-* Multilingual Global Suite: Added complete support for 6 major world languages: English (US), Italian (it_IT), Spanish (es_ES), French (fr_FR), German (de_DE), and Brazilian Portuguese (pt_BR).
-* Automatic & Manual Language Switcher: Automatically follows the active WordPress locale with a dedicated option to manually override the plugin language in the dashboard.
-* Primary Administrative Sidebar Menu: Added dedicated "RGBmind Ephemere" menu item (`manage_options`, `dashicons-clock`).
-* Two-Tab Administrative Dashboard: Overview table of all ephemeral accounts with real-time status badges and Settings tab.
-
-= 1.1.0 =
-* Internationalization support with English base language and translations included.
-* Added extensibility hooks for companion plugins.
-* Updated uninstall.php to clean all options and metadata.
-
-= 1.0.0 =
-* Initial release conforming to WordPress.org standards.
-* Interactive welcome guide notice on first installation.
-* Complete ephemeral access management via native user metadata.
-* Authentication interceptor via `wp_authenticate_user`.
-* Automatic login count and timestamp tracking on `wp_login`.
-* Proactive active session termination upon expiration.
-* Dedicated visual status column in the users list.
-* Complete database cleanup via `uninstall.php`.
+* Initial official release on WordPress.org.
+* Precise expiration scheduling fully synchronized with WordPress site timezone.
+* Login count limits with automatic account lockout upon threshold.
+* Instant account lockout toggle for immediate access revocation.
+* Real-time active session and authentication cookie invalidation upon expiration.
+* Dedicated administrative overview dashboard and user table status column.
+* 100% WordPress.org compliant architecture with clean separation between free core and commercial companion add-on.
+* Translation Ready (i18n): fully internationalized adhering to native WordPress localization standards (POT template included for community translations via translate.wordpress.org).
+* Verified compatibility with WordPress 6.7+ and PHP 8.2+.

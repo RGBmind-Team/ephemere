@@ -19,7 +19,7 @@ Built to meet strict WordPress development standards and cybersecurity principle
 * **📊 Access Monitoring**: Real-time read-only view of login counts and last login timestamp, with an option to reset the counter when re-enabling access.
 * **⚡ Real-Time Active Session Invalidation**: If an active temporary user is browsing the admin dashboard when their expiration time arrives, their session and authentication cookies are revoked immediately.
 * **🏷️ Users List Status Column**: Visual account health badge right inside the WordPress Users screen (*Active, Expired, Locked, Logins Exhausted*).
-* **🌐 Multi-Language Global Suite**: Fully translated into 6 languages (*English, Italian, Spanish, French, German, Brazilian Portuguese*) with automatic detection and manual override.
+* **🌐 Translation Ready (i18n)**: Fully internationalized with POT template included, adhering to WordPress core localization standards for community translations via translate.wordpress.org.
 
 ---
 
