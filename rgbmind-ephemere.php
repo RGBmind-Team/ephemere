@@ -3,7 +3,7 @@
  * Plugin Name:       RGBmind Ephemere
  * Plugin URI:        https://rgbmind.com/ephemere/
  * Description:       Advanced temporary login and timed access manager for WordPress users. Set expiration dates, max login limits, and instant account locking with zero custom database tables and zero external API calls.
- * Version:           1.2.1
+ * Version:           1.2.2
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            RGBmind
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin constants.
  */
-define( 'RGBMIND_EPH_VERSION', '1.2.1' );
+define( 'RGBMIND_EPH_VERSION', '1.2.2' );
 define( 'RGBMIND_EPH_PLUGIN_FILE', __FILE__ );
 define( 'RGBMIND_EPH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RGBMIND_EPH_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -1133,6 +1133,21 @@ function rgbmind_eph_render_dashboard() {
 							</p>
 						</div>
 					</div>
+
+					<!-- Review & Community Support Card -->
+					<div class="card" style="margin: 20px 0 0 0; padding: 20px; background: #fff; border-top: 4px solid #f0b849;">
+						<h3 style="margin-top: 0; font-size: 15px; color: #1d2327;">
+							⭐ <?php esc_html_e( 'Enjoying RGBmind Ephemere?', 'rgbmind-ephemere' ); ?>
+						</h3>
+						<p style="color: #50575e; font-size: 13px; line-height: 1.5;">
+							<?php esc_html_e( 'If this plugin is helping you secure your site, please consider leaving a 5-star review on WordPress.org. Your feedback supports continued development!', 'rgbmind-ephemere' ); ?>
+						</p>
+						<div style="margin-top: 15px; text-align: center;">
+							<a href="https://wordpress.org/support/plugin/rgbmind-ephemere/reviews/#new-post" target="_blank" rel="noopener noreferrer" class="button button-secondary" style="width: 100%; text-align: center; text-decoration: none; border-color: #f0b849; color: #855d10; font-weight: 600;">
+								★★★★★ <?php esc_html_e( 'Rate 5-Stars on WordPress.org', 'rgbmind-ephemere' ); ?>
+							</a>
+						</div>
+					</div>
 				</div>
 			</div>
 		<?php endif; ?>
@@ -1234,6 +1249,21 @@ function rgbmind_eph_add_plugin_action_links( $links ) {
 	return $links;
 }
 add_filter( 'plugin_action_links_' . plugin_basename( RGBMIND_EPH_PLUGIN_FILE ), 'rgbmind_eph_add_plugin_action_links' );
+
+/**
+ * Adds row meta links in the plugins list table (wp-admin/plugins.php).
+ *
+ * @param array  $plugin_meta Existing plugin meta links.
+ * @param string $plugin_file Plugin file path.
+ * @return array
+ */
+function rgbmind_eph_add_plugin_row_meta( $plugin_meta, $plugin_file ) {
+	if ( plugin_basename( RGBMIND_EPH_PLUGIN_FILE ) === $plugin_file ) {
+		$plugin_meta[] = '<a href="https://wordpress.org/support/plugin/rgbmind-ephemere/reviews/#new-post" target="_blank" rel="noopener noreferrer" style="color: #855d10; font-weight: 600;">' . esc_html__( 'Rate ★★★★★', 'rgbmind-ephemere' ) . '</a>';
+	}
+	return $plugin_meta;
+}
+add_filter( 'plugin_row_meta', 'rgbmind_eph_add_plugin_row_meta', 10, 2 );
 
 /**
  * Activation hook: enables welcome guide notice only on initial installation.

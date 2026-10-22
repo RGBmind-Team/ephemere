@@ -5,7 +5,7 @@ Tags: temporary login, timed access, temporary users, access control, login limi
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,10 @@ RGBmind Ephemere PRO is a separate commercial add-on plugin for agencies needing
 1. Temporary access restrictions and security status panel in WordPress user profile edit screen.
 
 == Changelog ==
+
+= 1.2.2 =
+* Community Review Card: added dedicated feedback and 5-star review prompt in Settings & Extensions dashboard.
+* Plugin Row Meta: added quick review action link in the WordPress plugins management screen.
 
 = 1.2.1 =
 * Initial official release on WordPress.org.
