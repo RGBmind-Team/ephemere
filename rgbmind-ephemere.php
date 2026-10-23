@@ -3,7 +3,7 @@
  * Plugin Name:       RGBmind Ephemere
  * Plugin URI:        https://rgbmind.com/ephemere/
  * Description:       Advanced temporary login and timed access manager for WordPress users. Set expiration dates, max login limits, and instant account locking with zero custom database tables and zero external API calls.
- * Version:           1.2.2
+ * Version:           1.2.3
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            RGBmind
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin constants.
  */
-define( 'RGBMIND_EPH_VERSION', '1.2.2' );
+define( 'RGBMIND_EPH_VERSION', '1.2.3' );
 define( 'RGBMIND_EPH_PLUGIN_FILE', __FILE__ );
 define( 'RGBMIND_EPH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RGBMIND_EPH_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

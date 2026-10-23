@@ -5,7 +5,7 @@ Tags: temporary login, timed access, temporary users, access control, login limi
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,13 @@ RGBmind Ephemere PRO is a separate commercial add-on plugin for agencies needing
 1. Temporary access restrictions and security status panel in WordPress user profile edit screen.
 
 == Changelog ==
+
+= 1.2.3 =
+* Security Architecture: introduced clear IAM separation into JIT (Just-In-Time Access), RBAC (Role-Based Access Control), and MAC (Mandatory Access Control) sections in both user profiles and administrative dashboard.
+* RBAC Matrix & Least-Privilege Protection: added visual role capability table and dynamic zero-trust warning badge when temporary accounts are granted Administrator privileges.
+* Mandatory Access Control (MAC): dedicated section for instant kill-switch session revocation and global access auditing.
+* Bug Report & Feedback Hub: added direct links to the official RGBmind Bug Report & Feedback Hub in the admin header, dashboard sidebar, and plugin row meta.
+* Backward Compatibility: old dashboard query arguments (tab=accounts, tab=license) automatically alias to the new structure.
 
 = 1.2.2 =
 * Community Review Card: added dedicated feedback and 5-star review prompt in Settings & Extensions dashboard.
