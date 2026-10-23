@@ -153,11 +153,40 @@ function rgbmind_eph_render_user_profile_fields( $user ) {
 	}
 
 	$timezone_string = wp_timezone_string();
+
+	// Primary role classification for RBAC section
+	$user_roles        = (array) $user->roles;
+	$primary_role_slug = ! empty( $user_roles[0] ) ? $user_roles[0] : 'none';
+	$wp_roles_obj      = wp_roles();
+	$primary_role_name = isset( $wp_roles_obj->roles[ $primary_role_slug ]['name'] ) ? translate_user_role( $wp_roles_obj->roles[ $primary_role_slug ]['name'] ) : ucfirst( $primary_role_slug );
+
+	// Privilege badge calculation
+	$role_badge_bg    = '#f0f0f1';
+	$role_badge_color = '#50575e';
+	$role_badge_text  = __( 'Standard Privilege', 'rgbmind-ephemere' );
+
+	if ( 'administrator' === $primary_role_slug ) {
+		$role_badge_bg    = '#fcf0f1';
+		$role_badge_color = '#b32d2e';
+		$role_badge_text  = __( 'Critical (Full Site Control)', 'rgbmind-ephemere' );
+	} elseif ( in_array( $primary_role_slug, array( 'editor', 'shop_manager' ), true ) ) {
+		$role_badge_bg    = '#fef7e0';
+		$role_badge_color = '#996800';
+		$role_badge_text  = __( 'Elevated (Content & Store)', 'rgbmind-ephemere' );
+	} elseif ( in_array( $primary_role_slug, array( 'author', 'contributor' ), true ) ) {
+		$role_badge_bg    = '#e7f5ea';
+		$role_badge_color = '#137333';
+		$role_badge_text  = __( 'Standard (Publishing)', 'rgbmind-ephemere' );
+	} elseif ( in_array( $primary_role_slug, array( 'subscriber', 'customer' ), true ) ) {
+		$role_badge_bg    = '#f0f6fc';
+		$role_badge_color = '#135e96';
+		$role_badge_text  = __( 'Restricted (Read Only)', 'rgbmind-ephemere' );
+	}
 	?>
 	<div class="rgbmind-ephemere-wrapper" style="margin-top: 25px;">
 		<div style="display: flex; align-items: center; justify-content: space-between; max-width: 850px; flex-wrap: wrap; gap: 10px;">
 			<h2 style="margin: 0; display: flex; align-items: center; gap: 8px;">
-				<span><?php esc_html_e( 'RGBmind Ephemere – Temporary Access Management', 'rgbmind-ephemere' ); ?></span>
+				<span><?php esc_html_e( 'RGBmind Ephemere – IAM & Access Control', 'rgbmind-ephemere' ); ?></span>
 				<span style="font-size: 11px; font-weight: 600; color: #646970; background: #f0f0f1; border: 1px solid #dcdcde; padding: 2px 7px; border-radius: 10px;">v<?php echo esc_html( RGBMIND_EPH_VERSION ); ?></span>
 			</h2>
 			<?php if ( $is_pro ) : ?>
@@ -185,199 +214,277 @@ function rgbmind_eph_render_user_profile_fields( $user ) {
 			<p class="description" style="margin: 0;"><?php echo esc_html( $status_desc ); ?></p>
 		</div>
 
-		<table class="form-table" role="presentation" style="max-width: 850px;">
-			<tbody>
-				<!-- 1. Enable temporary restrictions (FREE) -->
-				<tr>
-					<th scope="row">
-						<label for="_rgbmind_is_ephemeral"><?php esc_html_e( 'Temporary Account', 'rgbmind-ephemere' ); ?></label>
-					</th>
-					<td>
-						<fieldset>
-							<label for="_rgbmind_is_ephemeral">
-								<input type="checkbox" name="_rgbmind_is_ephemeral" id="_rgbmind_is_ephemeral" value="1" <?php checked( 1, $is_ephemeral ); ?> />
-								<strong><?php esc_html_e( 'Enable temporary access restrictions for this user', 'rgbmind-ephemere' ); ?></strong>
-							</label>
-							<p class="description">
-								<?php esc_html_e( 'When enabled, the user will be subject to expiration time, login limits, and instant lockout checks.', 'rgbmind-ephemere' ); ?>
-							</p>
-						</fieldset>
-					</td>
-				</tr>
+		<!-- ===================================================================
+		     SECTION 1: JIT (JUST-IN-TIME ACCESS)
+		     =================================================================== -->
+		<div class="rgbmind-section-card" style="background: #fff; border: 1px solid #c3c4c7; border-top: 3px solid #2271b1; border-radius: 4px; padding: 16px 20px; max-width: 850px; margin-bottom: 20px;">
+			<h3 style="margin-top: 0; margin-bottom: 4px; font-size: 15px; color: #1d2327; display: flex; align-items: center; gap: 8px;">
+				<span>⏱️ <?php esc_html_e( 'JIT (Just-In-Time Access)', 'rgbmind-ephemere' ); ?></span>
+			</h3>
+			<p style="margin: 0 0 15px 0; color: #646970; font-size: 12.5px;">
+				<?php esc_html_e( 'Time-based expiration, login count limits, and single-use entry controls.', 'rgbmind-ephemere' ); ?>
+			</p>
 
-				<!-- 2. Expiration date and time (FREE) -->
-				<tr class="rgbmind-ephemere-field">
-					<th scope="row">
-						<label for="_rgbmind_expire_at"><?php esc_html_e( 'Expiration Date & Time', 'rgbmind-ephemere' ); ?></label>
-					</th>
-					<td>
-						<input type="datetime-local" name="_rgbmind_expire_at" id="_rgbmind_expire_at" value="<?php echo esc_attr( $expire_input_value ); ?>" class="regular-text" style="max-width: 280px;" />
-						<p class="description">
-							<?php
-							printf(
-								/* translators: %s: site timezone string */
-								esc_html__( 'Access will be automatically denied after this date and time. Site timezone: %s. Leave empty for no time limit.', 'rgbmind-ephemere' ),
-								'<strong>' . esc_html( $timezone_string ) . '</strong>'
-							);
-							?>
-						</p>
-						<?php if ( $expire_at > 0 ) : ?>
-							<p class="description" style="color: <?php echo ( $now_ts >= $expire_at ) ? '#d63638' : '#2271b1'; ?>; font-weight: 500;">
+			<table class="form-table" role="presentation" style="margin-top: 0;">
+				<tbody>
+					<!-- 1. Enable temporary restrictions (FREE) -->
+					<tr>
+						<th scope="row" style="width: 220px;">
+							<label for="_rgbmind_is_ephemeral"><?php esc_html_e( 'Temporary Account', 'rgbmind-ephemere' ); ?></label>
+						</th>
+						<td>
+							<fieldset>
+								<label for="_rgbmind_is_ephemeral">
+									<input type="checkbox" name="_rgbmind_is_ephemeral" id="_rgbmind_is_ephemeral" value="1" <?php checked( 1, $is_ephemeral ); ?> />
+									<strong><?php esc_html_e( 'Enable temporary access restrictions for this user', 'rgbmind-ephemere' ); ?></strong>
+								</label>
+								<p class="description">
+									<?php esc_html_e( 'When enabled, the user will be subject to expiration time, login limits, and instant lockout checks.', 'rgbmind-ephemere' ); ?>
+								</p>
+							</fieldset>
+						</td>
+					</tr>
+
+					<!-- 2. Expiration date and time (FREE) -->
+					<tr class="rgbmind-ephemere-field">
+						<th scope="row">
+							<label for="_rgbmind_expire_at"><?php esc_html_e( 'Expiration Date & Time', 'rgbmind-ephemere' ); ?></label>
+						</th>
+						<td>
+							<input type="datetime-local" name="_rgbmind_expire_at" id="_rgbmind_expire_at" value="<?php echo esc_attr( $expire_input_value ); ?>" class="regular-text" style="max-width: 280px;" />
+							<p class="description">
 								<?php
-								$formatted_date = wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $expire_at );
-								if ( $now_ts >= $expire_at ) {
-									printf(
-										/* translators: %s: formatted date and time */
-										esc_html__( 'Attention: Expired on %s.', 'rgbmind-ephemere' ),
-										esc_html( $formatted_date )
+								printf(
+									/* translators: %s: site timezone string */
+									esc_html__( 'Access will be automatically denied after this date and time. Site timezone: %s. Leave empty for no time limit.', 'rgbmind-ephemere' ),
+									'<strong>' . esc_html( $timezone_string ) . '</strong>'
+								);
+								?>
+							</p>
+							<?php if ( $expire_at > 0 ) : ?>
+								<p class="description" style="color: <?php echo ( $now_ts >= $expire_at ) ? '#d63638' : '#2271b1'; ?>; font-weight: 500;">
+									<?php
+									$formatted_date = wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $expire_at );
+									if ( $now_ts >= $expire_at ) {
+										printf(
+											/* translators: %s: formatted date and time */
+											esc_html__( 'Attention: Expired on %s.', 'rgbmind-ephemere' ),
+											esc_html( $formatted_date )
+										);
+									} else {
+										printf(
+											/* translators: 1: formatted date/time, 2: human readable time diff */
+											esc_html__( 'Scheduled expiration: %1$s (in about %2$s).', 'rgbmind-ephemere' ),
+											esc_html( $formatted_date ),
+											esc_html( human_time_diff( $now_ts, $expire_at ) )
+										);
+									}
+									?>
+								</p>
+							<?php endif; ?>
+						</td>
+					</tr>
+
+					<!-- 3. Maximum allowed logins (FREE) -->
+					<tr class="rgbmind-ephemere-field">
+						<th scope="row">
+							<label for="_rgbmind_max_logins"><?php esc_html_e( 'Maximum Number of Logins', 'rgbmind-ephemere' ); ?></label>
+						</th>
+						<td>
+							<input type="number" name="_rgbmind_max_logins" id="_rgbmind_max_logins" min="0" step="1" value="<?php echo esc_attr( $max_logins ); ?>" class="small-text" style="width: 90px;" />
+							<span class="description"><?php esc_html_e( 'allowed logins (0 = unlimited).', 'rgbmind-ephemere' ); ?></span>
+						</td>
+					</tr>
+
+					<!-- 4. Read-only login counter (FREE) -->
+					<tr class="rgbmind-ephemere-field">
+						<th scope="row">
+							<label for="_rgbmind_login_count"><?php esc_html_e( 'Logins Used', 'rgbmind-ephemere' ); ?></label>
+						</th>
+						<td>
+							<input type="number" id="_rgbmind_login_count" value="<?php echo esc_attr( $login_count ); ?>" readonly="readonly" class="small-text" style="width: 90px; background-color: #f0f0f1; cursor: not-allowed; color: #50575e;" />
+							<span class="description" style="margin-left: 6px;">
+								<?php
+								if ( $max_logins > 0 ) {
+									$remaining = max( 0, $max_logins - $login_count );
+									/* translators: 1: current login count, 2: maximum allowed logins, 3: remaining logins */
+									echo esc_html(
+										sprintf(
+											/* translators: 1: current login count, 2: maximum allowed logins, 3: remaining logins */
+											__( '%1$d of %2$d logins used (%3$d remaining).', 'rgbmind-ephemere' ),
+											absint( $login_count ),
+											absint( $max_logins ),
+											absint( $remaining )
+										)
 									);
 								} else {
-									printf(
-										/* translators: 1: formatted date/time, 2: human readable time diff */
-										esc_html__( 'Scheduled expiration: %1$s (in about %2$s).', 'rgbmind-ephemere' ),
-										esc_html( $formatted_date ),
-										esc_html( human_time_diff( $now_ts, $expire_at ) )
+									/* translators: %d: current login count */
+									echo esc_html(
+										sprintf(
+											/* translators: %d: current login count */
+											__( '%d logins recorded.', 'rgbmind-ephemere' ),
+											absint( $login_count )
+										)
 									);
 								}
 								?>
-							</p>
-						<?php endif; ?>
-					</td>
-				</tr>
+							</span>
+							<div style="margin-top: 6px;">
+								<label for="rgbmind_reset_login_count">
+									<input type="checkbox" name="rgbmind_reset_login_count" id="rgbmind_reset_login_count" value="1" />
+									<span style="color: #646970; font-size: 13px;"><?php esc_html_e( 'Reset login counter on save (restore to 0)', 'rgbmind-ephemere' ); ?></span>
+								</label>
+							</div>
+						</td>
+					</tr>
 
-				<!-- 3. Maximum allowed logins (FREE) -->
-				<tr class="rgbmind-ephemere-field">
-					<th scope="row">
-						<label for="_rgbmind_max_logins"><?php esc_html_e( 'Maximum Number of Logins', 'rgbmind-ephemere' ); ?></label>
-					</th>
-					<td>
-						<input type="number" name="_rgbmind_max_logins" id="_rgbmind_max_logins" min="0" step="1" value="<?php echo esc_attr( $max_logins ); ?>" class="small-text" style="width: 90px;" />
-						<span class="description"><?php esc_html_e( 'allowed logins (0 = unlimited).', 'rgbmind-ephemere' ); ?></span>
-					</td>
-				</tr>
+					<!-- 5. PRO JIT Field: Magic Login Link -->
+					<?php if ( $is_pro ) : ?>
+						<?php do_action( 'rgbmind_eph_render_pro_jit_fields', $user ); ?>
+					<?php else : ?>
+						<tr class="rgbmind-ephemere-field" style="border-top: 1px solid #f0f0f1;">
+							<th scope="row">
+								<label><?php esc_html_e( 'One-Click Login Link', 'rgbmind-ephemere' ); ?></label>
+								<br /><span style="display: inline-block; margin-top: 4px; background: #f0f0f1; color: #50575e; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; border: 1px solid #c3c4c7;">[PRO]</span>
+							</th>
+							<td>
+								<div style="background: #fcfcfc; border: 1px dashed #c3c4c7; padding: 12px 16px; border-radius: 4px; max-width: 650px;">
+									<input type="text" disabled="disabled" value="https://example.com/wp-login.php?rgbmind_magic_auth=••••••••••••••••" class="regular-text" style="width: 100%; opacity: 0.5;" />
+									<p class="description" style="margin-top: 8px;">
+										<strong><?php esc_html_e( 'Available in PRO:', 'rgbmind-ephemere' ); ?></strong>
+										<?php esc_html_e( 'Generate encrypted, single-use login links for direct passwordless access for contractors and clients.', 'rgbmind-ephemere' ); ?>
+										<a href="<?php echo esc_url( RGBMIND_EPH_PRO_URL ); ?>" target="_blank" rel="noopener noreferrer" style="font-weight: 600;">
+											<?php esc_html_e( 'Learn more at rgbmind.com →', 'rgbmind-ephemere' ); ?>
+										</a>
+									</p>
+								</div>
+							</td>
+						</tr>
+					<?php endif; ?>
+				</tbody>
+			</table>
+		</div>
 
-				<!-- 4. Read-only login counter (FREE) -->
-				<tr class="rgbmind-ephemere-field">
-					<th scope="row">
-						<label for="_rgbmind_login_count"><?php esc_html_e( 'Logins Used', 'rgbmind-ephemere' ); ?></label>
-					</th>
-					<td>
-						<input type="number" id="_rgbmind_login_count" value="<?php echo esc_attr( $login_count ); ?>" readonly="readonly" class="small-text" style="width: 90px; background-color: #f0f0f1; cursor: not-allowed; color: #50575e;" />
-						<span class="description" style="margin-left: 6px;">
-							<?php
-							if ( $max_logins > 0 ) {
-								$remaining = max( 0, $max_logins - $login_count );
-								/* translators: 1: current login count, 2: maximum allowed logins, 3: remaining logins */
-								echo esc_html(
-									sprintf(
-										/* translators: 1: current login count, 2: maximum allowed logins, 3: remaining logins */
-										__( '%1$d of %2$d logins used (%3$d remaining).', 'rgbmind-ephemere' ),
-										absint( $login_count ),
-										absint( $max_logins ),
-										absint( $remaining )
-									)
-								);
-							} else {
-								/* translators: %d: current login count */
-								echo esc_html(
-									sprintf(
-										/* translators: %d: current login count */
-										__( '%d logins recorded.', 'rgbmind-ephemere' ),
-										absint( $login_count )
-									)
-								);
-							}
-							?>
-						</span>
-						<div style="margin-top: 6px;">
-							<label for="rgbmind_reset_login_count">
-								<input type="checkbox" name="rgbmind_reset_login_count" id="rgbmind_reset_login_count" value="1" />
-								<span style="color: #646970; font-size: 13px;"><?php esc_html_e( 'Reset login counter on save (restore to 0)', 'rgbmind-ephemere' ); ?></span>
-							</label>
-						</div>
-					</td>
-				</tr>
+		<!-- ===================================================================
+		     SECTION 2: RBAC (ROLE-BASED ACCESS CONTROL)
+		     =================================================================== -->
+		<div class="rgbmind-section-card" style="background: #fff; border: 1px solid #c3c4c7; border-top: 3px solid #b06000; border-radius: 4px; padding: 16px 20px; max-width: 850px; margin-bottom: 20px;">
+			<h3 style="margin-top: 0; margin-bottom: 4px; font-size: 15px; color: #1d2327; display: flex; align-items: center; gap: 8px;">
+				<span>🛡️ <?php esc_html_e( 'RBAC (Role-Based Access Control)', 'rgbmind-ephemere' ); ?></span>
+			</h3>
+			<p style="margin: 0 0 15px 0; color: #646970; font-size: 12.5px;">
+				<?php esc_html_e( 'Privilege levels, authorization bounds, and Least-Privilege enforcement.', 'rgbmind-ephemere' ); ?>
+			</p>
 
-				<!-- 5. Instant lockout checkbox (FREE) -->
-				<tr class="rgbmind-ephemere-field">
-					<th scope="row">
-						<label for="_rgbmind_is_locked"><?php esc_html_e( 'Instant Account Lock', 'rgbmind-ephemere' ); ?></label>
-					</th>
-					<td>
-						<fieldset>
-							<label for="_rgbmind_is_locked">
-								<input type="checkbox" name="_rgbmind_is_locked" id="_rgbmind_is_locked" value="1" <?php checked( 1, $is_locked ); ?> />
-								<strong style="color: #b32d2e;"><?php esc_html_e( 'Instantly block access for this user account', 'rgbmind-ephemere' ); ?></strong>
-							</label>
-							<p class="description">
-								<?php esc_html_e( 'When checked, any login attempt will be immediately rejected with an error regardless of expiration or remaining logins.', 'rgbmind-ephemere' ); ?>
-							</p>
-						</fieldset>
-					</td>
-				</tr>
+			<table class="form-table" role="presentation" style="margin-top: 0;">
+				<tbody>
+					<tr>
+						<th scope="row" style="width: 220px;">
+							<label><?php esc_html_e( 'Current WordPress Role', 'rgbmind-ephemere' ); ?></label>
+						</th>
+						<td>
+							<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+								<strong style="font-size: 14px; color: #1d2327;"><?php echo esc_html( $primary_role_name ); ?></strong>
+								<code><?php echo esc_html( $primary_role_slug ); ?></code>
+								<span style="display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 11.5px; background: <?php echo esc_attr( $role_badge_bg ); ?>; color: <?php echo esc_attr( $role_badge_color ); ?>;">
+									<?php echo esc_html( $role_badge_text ); ?>
+								</span>
+							</div>
 
-				<?php if ( $is_pro ) : ?>
+							<?php if ( 'administrator' === $primary_role_slug ) : ?>
+								<p class="description" style="color: #b32d2e; font-weight: 500;">
+									⚠️ <strong><?php esc_html_e( 'Zero-Trust Notice:', 'rgbmind-ephemere' ); ?></strong>
+									<?php esc_html_e( 'This account holds full Administrator capabilities. When creating temporary access for contractors, always set a defined expiration timer to respect the Principle of Least Privilege.', 'rgbmind-ephemere' ); ?>
+								</p>
+							<?php else : ?>
+								<p class="description">
+									<?php esc_html_e( 'User capabilities are governed by standard WordPress role permissions. Temporary access rules will terminate access once time or login limits are reached.', 'rgbmind-ephemere' ); ?>
+								</p>
+							<?php endif; ?>
+						</td>
+					</tr>
+
+					<?php do_action( 'rgbmind_eph_render_pro_rbac_fields', $user ); ?>
+				</tbody>
+			</table>
+		</div>
+
+		<!-- ===================================================================
+		     SECTION 3: MAC (MANDATORY ACCESS CONTROL)
+		     =================================================================== -->
+		<div class="rgbmind-section-card" style="background: #fff; border: 1px solid #c3c4c7; border-top: 3px solid #d63638; border-radius: 4px; padding: 16px 20px; max-width: 850px; margin-bottom: 20px;">
+			<h3 style="margin-top: 0; margin-bottom: 4px; font-size: 15px; color: #1d2327; display: flex; align-items: center; gap: 8px;">
+				<span>🔒 <?php esc_html_e( 'MAC & Compliance (Mandatory Access Control)', 'rgbmind-ephemere' ); ?></span>
+			</h3>
+			<p style="margin: 0 0 15px 0; color: #646970; font-size: 12.5px;">
+				<?php esc_html_e( 'System-enforced lockouts, non-bypassable kill-switches, and audit trail records.', 'rgbmind-ephemere' ); ?>
+			</p>
+
+			<table class="form-table" role="presentation" style="margin-top: 0;">
+				<tbody>
+					<!-- 1. Instant lockout checkbox (FREE) -->
+					<tr>
+						<th scope="row" style="width: 220px;">
+							<label for="_rgbmind_is_locked"><?php esc_html_e( 'System Kill Switch', 'rgbmind-ephemere' ); ?></label>
+						</th>
+						<td>
+							<fieldset>
+								<label for="_rgbmind_is_locked">
+									<input type="checkbox" name="_rgbmind_is_locked" id="_rgbmind_is_locked" value="1" <?php checked( 1, $is_locked ); ?> />
+									<strong style="color: #b32d2e;"><?php esc_html_e( 'Instantly block access for this user account (Hard Lock)', 'rgbmind-ephemere' ); ?></strong>
+								</label>
+								<p class="description">
+									<?php esc_html_e( 'Mandatory system policy: When locked, any login attempt will be immediately rejected regardless of expiration timer or remaining login count.', 'rgbmind-ephemere' ); ?>
+								</p>
+							</fieldset>
+						</td>
+					</tr>
+
+					<!-- 2. PRO MAC Field: Access Audit Log -->
+					<?php if ( $is_pro ) : ?>
+						<?php do_action( 'rgbmind_eph_render_pro_mac_fields', $user ); ?>
+					<?php else : ?>
+						<tr class="rgbmind-ephemere-field" style="border-top: 1px solid #f0f0f1;">
+							<th scope="row">
+								<label><?php esc_html_e( 'Access Audit Log', 'rgbmind-ephemere' ); ?></label>
+								<br /><span style="display: inline-block; margin-top: 4px; background: #f0f0f1; color: #50575e; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; border: 1px solid #c3c4c7;">[PRO]</span>
+							</th>
+							<td>
+								<div style="background: #fcfcfc; border: 1px dashed #c3c4c7; padding: 12px 16px; border-radius: 4px; max-width: 650px;">
+									<table class="widefat striped" style="opacity: 0.45; pointer-events: none; margin-bottom: 8px;">
+										<thead>
+											<tr>
+												<th>Date & Time</th>
+												<th>Method</th>
+												<th>IP Address</th>
+												<th>Status</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>2026-10-08 10:15:00</td>
+												<td>One-Click Link</td>
+												<td>192.168.1.xxx</td>
+												<td>Success</td>
+											</tr>
+										</tbody>
+									</table>
+									<p class="description" style="margin: 0;">
+										<strong><?php esc_html_e( 'Available in PRO:', 'rgbmind-ephemere' ); ?></strong>
+										<?php esc_html_e( 'Detailed history of the last 10 logins with GDPR-anonymized IP addresses and login methods.', 'rgbmind-ephemere' ); ?>
+										<a href="<?php echo esc_url( RGBMIND_EPH_PRO_URL ); ?>" target="_blank" rel="noopener noreferrer" style="font-weight: 600;">
+											<?php esc_html_e( 'Learn more at rgbmind.com →', 'rgbmind-ephemere' ); ?>
+										</a>
+									</p>
+								</div>
+							</td>
+						</tr>
+					<?php endif; ?>
+
 					<?php do_action( 'rgbmind_eph_render_pro_profile_fields', $user ); ?>
-				<?php else : ?>
-					<!-- 6. PRO PREVIEW: One-Click Temporary Login Link -->
-					<tr class="rgbmind-ephemere-field" style="border-top: 1px solid #dcdcde;">
-						<th scope="row">
-							<label><?php esc_html_e( 'One-Click Login Link', 'rgbmind-ephemere' ); ?></label>
-							<br /><span style="display: inline-block; margin-top: 4px; background: #f0f0f1; color: #50575e; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; border: 1px solid #c3c4c7;">[PRO]</span>
-						</th>
-						<td>
-							<div style="background: #fcfcfc; border: 1px dashed #c3c4c7; padding: 12px 16px; border-radius: 4px; max-width: 650px;">
-								<input type="text" disabled="disabled" value="https://example.com/wp-login.php?rgbmind_magic_auth=••••••••••••••••" class="regular-text" style="width: 100%; opacity: 0.5;" />
-								<p class="description" style="margin-top: 8px;">
-									<strong><?php esc_html_e( 'Available in PRO:', 'rgbmind-ephemere' ); ?></strong>
-									<?php esc_html_e( 'Generate encrypted, single-use login links for direct passwordless access for contractors and clients.', 'rgbmind-ephemere' ); ?>
-									<a href="<?php echo esc_url( RGBMIND_EPH_PRO_URL ); ?>" target="_blank" rel="noopener noreferrer" style="font-weight: 600;">
-										<?php esc_html_e( 'Learn more at rgbmind.com →', 'rgbmind-ephemere' ); ?>
-									</a>
-								</p>
-							</div>
-						</td>
-					</tr>
-
-					<!-- 7. PRO PREVIEW: Access Audit Log -->
-					<tr class="rgbmind-ephemere-field" style="border-top: 1px solid #dcdcde;">
-						<th scope="row">
-							<label><?php esc_html_e( 'Access Audit Log', 'rgbmind-ephemere' ); ?></label>
-							<br /><span style="display: inline-block; margin-top: 4px; background: #f0f0f1; color: #50575e; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; border: 1px solid #c3c4c7;">[PRO]</span>
-						</th>
-						<td>
-							<div style="background: #fcfcfc; border: 1px dashed #c3c4c7; padding: 12px 16px; border-radius: 4px; max-width: 650px;">
-								<table class="widefat striped" style="opacity: 0.45; pointer-events: none; margin-bottom: 8px;">
-									<thead>
-										<tr>
-											<th>Date & Time</th>
-											<th>Method</th>
-											<th>IP Address</th>
-											<th>Status</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>2026-10-08 10:15:00</td>
-											<td>One-Click Link</td>
-											<td>192.168.1.xxx</td>
-											<td>Success</td>
-										</tr>
-									</tbody>
-								</table>
-								<p class="description" style="margin: 0;">
-									<strong><?php esc_html_e( 'Available in PRO:', 'rgbmind-ephemere' ); ?></strong>
-									<?php esc_html_e( 'Detailed history of the last 10 logins with GDPR-anonymized IP addresses and login methods.', 'rgbmind-ephemere' ); ?>
-									<a href="<?php echo esc_url( RGBMIND_EPH_PRO_URL ); ?>" target="_blank" rel="noopener noreferrer" style="font-weight: 600;">
-										<?php esc_html_e( 'Learn more at rgbmind.com →', 'rgbmind-ephemere' ); ?>
-									</a>
-								</p>
-							</div>
-						</td>
-					</tr>
-				<?php endif; ?>
-			</tbody>
-		</table>
+				</tbody>
+			</table>
+		</div>
 
 		<?php if ( ! $is_pro ) : ?>
 			<div class="rgbmind-pro-teaser" style="margin-top: 20px; padding: 16px 20px; background: #fff; border-left: 4px solid #2271b1; box-shadow: 0 1px 3px rgba(0,0,0,0.05); max-width: 850px;">
@@ -804,15 +911,21 @@ function rgbmind_eph_render_dashboard() {
 		}
 	}
 
-	// Active tab determination
+	// Active tab determination (with backward compatibility)
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading public admin tab navigation query parameter.
-	$active_tab = isset( $_GET['tab'] ) && ( 'settings' === $_GET['tab'] || 'license' === $_GET['tab'] ) ? 'settings' : 'accounts';
+	$raw_tab = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'jit';
+	if ( 'accounts' === $raw_tab ) {
+		$raw_tab = 'jit';
+	} elseif ( 'license' === $raw_tab ) {
+		$raw_tab = 'settings';
+	}
+	$active_tab = in_array( $raw_tab, array( 'jit', 'rbac', 'mac', 'settings' ), true ) ? $raw_tab : 'jit';
 	$is_pro     = rgbmind_eph_is_pro_active();
 	?>
 	<div class="wrap">
 		<h1 style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
 			<span style="display: flex; align-items: center; gap: 10px;">
-				<span>⏱️ <?php esc_html_e( 'RGBmind Ephemere – Management Dashboard', 'rgbmind-ephemere' ); ?></span>
+				<span>⏱️ <?php esc_html_e( 'RGBmind Ephemere – IAM & Access Dashboard', 'rgbmind-ephemere' ); ?></span>
 				<span style="font-size: 11px; font-weight: 600; color: #50575e; background: #f0f0f1; border: 1px solid #dcdcde; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.5px;">v<?php echo esc_html( RGBMIND_EPH_VERSION ); ?></span>
 			</span>
 			<?php if ( $is_pro ) : ?>
@@ -834,18 +947,24 @@ function rgbmind_eph_render_dashboard() {
 			</div>
 		<?php endif; ?>
 
-		<!-- Tab Navigation -->
+		<!-- Tab Navigation: JIT, RBAC, MAC, SETTINGS -->
 		<nav class="nav-tab-wrapper" style="margin-top: 15px; margin-bottom: 20px;">
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=accounts' ) ); ?>" class="nav-tab <?php echo 'accounts' === $active_tab ? 'nav-tab-active' : ''; ?>">
-				<?php esc_html_e( 'Temporary Accounts', 'rgbmind-ephemere' ); ?>
+			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=jit' ) ); ?>" class="nav-tab <?php echo 'jit' === $active_tab ? 'nav-tab-active' : ''; ?>">
+				⏱️ <?php esc_html_e( 'JIT Access', 'rgbmind-ephemere' ); ?>
+			</a>
+			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=rbac' ) ); ?>" class="nav-tab <?php echo 'rbac' === $active_tab ? 'nav-tab-active' : ''; ?>">
+				🛡️ <?php esc_html_e( 'RBAC (Roles & Privileges)', 'rgbmind-ephemere' ); ?>
+			</a>
+			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=mac' ) ); ?>" class="nav-tab <?php echo 'mac' === $active_tab ? 'nav-tab-active' : ''; ?>">
+				🔒 <?php esc_html_e( 'MAC & Compliance', 'rgbmind-ephemere' ); ?>
 			</a>
 			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=settings' ) ); ?>" class="nav-tab <?php echo 'settings' === $active_tab ? 'nav-tab-active' : ''; ?>">
-				<?php esc_html_e( 'Settings & Extensions', 'rgbmind-ephemere' ); ?>
+				⚙️ <?php esc_html_e( 'Settings & License', 'rgbmind-ephemere' ); ?>
 			</a>
 		</nav>
 
-		<!-- TAB 1: TEMPORARY ACCOUNTS -->
-		<?php if ( 'accounts' === $active_tab ) : ?>
+		<!-- TAB 1: JIT ACCESS (TEMPORARY ACCOUNTS) -->
+		<?php if ( 'jit' === $active_tab ) : ?>
 			<?php
 			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Filter is required to list configured temporary accounts.
 			$ephemeral_users = get_users(
@@ -1013,7 +1132,210 @@ function rgbmind_eph_render_dashboard() {
 				</table>
 			<?php endif; ?>
 
-		<!-- TAB 2: SETTINGS & PRO EXTENSIONS -->
+		<!-- TAB 2: RBAC (ROLE-BASED ACCESS CONTROL) -->
+		<?php elseif ( 'rbac' === $active_tab ) : ?>
+			<?php
+			$wp_roles_obj    = wp_roles();
+			$all_roles       = isset( $wp_roles_obj->roles ) ? $wp_roles_obj->roles : array();
+			$user_counts     = count_users();
+			$avail_counts    = isset( $user_counts['avail_roles'] ) ? $user_counts['avail_roles'] : array();
+			$ephemeral_users = get_users(
+				array(
+					'meta_key'   => '_rgbmind_is_ephemeral', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+					'meta_value' => 1,                       // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+					'number'     => 500,
+				)
+			);
+			$eph_by_role = array();
+			foreach ( $ephemeral_users as $u ) {
+				if ( ! empty( $u->roles ) && is_array( $u->roles ) ) {
+					foreach ( $u->roles as $r ) {
+						$eph_by_role[ $r ] = isset( $eph_by_role[ $r ] ) ? $eph_by_role[ $r ] + 1 : 1;
+					}
+				}
+			}
+			$temp_admin_count = isset( $eph_by_role['administrator'] ) ? (int) $eph_by_role['administrator'] : 0;
+			?>
+
+			<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+				<p style="margin: 0; color: #50575e; font-size: 13.5px;">
+					<?php esc_html_e( 'Role-Based Access Control (RBAC) matrix for temporary and permanent WordPress users.', 'rgbmind-ephemere' ); ?>
+				</p>
+				<a href="<?php echo esc_url( admin_url( 'users.php' ) ); ?>" class="button button-primary">
+					<?php esc_html_e( 'Manage WordPress Users & Roles', 'rgbmind-ephemere' ); ?> &rarr;
+				</a>
+			</div>
+
+			<?php if ( $temp_admin_count > 0 ) : ?>
+				<div class="notice notice-warning inline" style="margin: 0 0 20px 0; padding: 12px 16px; border-left-color: #dba617;">
+					<p style="margin: 0; font-size: 13px;">
+						<strong>⚠️ <?php esc_html_e( 'Least-Privilege Alert:', 'rgbmind-ephemere' ); ?></strong>
+						<?php
+						printf(
+							/* translators: %d: count of temporary administrators */
+							esc_html__( 'You currently have %d temporary account(s) with Administrator privileges. Under Zero-Trust security guidelines, ensure these accounts have strict expiration timers and are revoked immediately after maintenance.', 'rgbmind-ephemere' ),
+							$temp_admin_count
+						);
+						?>
+					</p>
+				</div>
+			<?php endif; ?>
+
+			<table class="wp-list-table widefat fixed striped table-view-list" style="box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 25px;">
+				<thead>
+					<tr>
+						<th style="width: 25%;"><?php esc_html_e( 'WordPress Role', 'rgbmind-ephemere' ); ?></th>
+						<th style="width: 25%;"><?php esc_html_e( 'Privilege Level', 'rgbmind-ephemere' ); ?></th>
+						<th style="width: 15%;"><?php esc_html_e( 'Total Users', 'rgbmind-ephemere' ); ?></th>
+						<th style="width: 18%;"><?php esc_html_e( 'Temporary Accounts', 'rgbmind-ephemere' ); ?></th>
+						<th style="width: 17%; text-align: right;"><?php esc_html_e( 'Action', 'rgbmind-ephemere' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					foreach ( $all_roles as $role_slug => $role_details ) :
+						$role_name     = translate_user_role( $role_details['name'] );
+						$total_in_role = isset( $avail_counts[ $role_slug ] ) ? (int) $avail_counts[ $role_slug ] : 0;
+						$eph_in_role   = isset( $eph_by_role[ $role_slug ] ) ? (int) $eph_by_role[ $role_slug ] : 0;
+
+						// Privilege definition
+						$badge_bg    = '#f0f0f1';
+						$badge_color = '#50575e';
+						$badge_text  = __( 'Standard Privilege', 'rgbmind-ephemere' );
+
+						if ( 'administrator' === $role_slug ) {
+							$badge_bg    = '#fcf0f1';
+							$badge_color = '#b32d2e';
+							$badge_text  = __( 'Critical (Full Site Access)', 'rgbmind-ephemere' );
+						} elseif ( in_array( $role_slug, array( 'editor', 'shop_manager' ), true ) ) {
+							$badge_bg    = '#fef7e0';
+							$badge_color = '#996800';
+							$badge_text  = __( 'Elevated (Content & Store)', 'rgbmind-ephemere' );
+						} elseif ( in_array( $role_slug, array( 'author', 'contributor' ), true ) ) {
+							$badge_bg    = '#e7f5ea';
+							$badge_color = '#137333';
+							$badge_text  = __( 'Standard (Publishing)', 'rgbmind-ephemere' );
+						} elseif ( in_array( $role_slug, array( 'subscriber', 'customer' ), true ) ) {
+							$badge_bg    = '#f0f6fc';
+							$badge_color = '#135e96';
+							$badge_text  = __( 'Restricted (Read Only)', 'rgbmind-ephemere' );
+						}
+						?>
+						<tr>
+							<td>
+								<strong><?php echo esc_html( $role_name ); ?></strong>
+								<br /><small style="color: #646970;"><code><?php echo esc_html( $role_slug ); ?></code></small>
+							</td>
+							<td>
+								<span style="display: inline-block; padding: 3px 8px; border-radius: 4px; font-weight: 600; font-size: 11.5px; background: <?php echo esc_attr( $badge_bg ); ?>; color: <?php echo esc_attr( $badge_color ); ?>;">
+									<?php echo esc_html( $badge_text ); ?>
+								</span>
+							</td>
+							<td>
+								<strong><?php echo esc_html( $total_in_role ); ?></strong>
+							</td>
+							<td>
+								<?php if ( $eph_in_role > 0 ) : ?>
+									<span style="color: #007017; font-weight: 700;">⏱️ <?php echo esc_html( $eph_in_role ); ?></span>
+								<?php else : ?>
+									<span style="color: #8c8f94;">0</span>
+								<?php endif; ?>
+							</td>
+							<td style="text-align: right;">
+								<a href="<?php echo esc_url( admin_url( 'users.php?role=' . urlencode( $role_slug ) ) ); ?>" class="button button-small">
+									<?php esc_html_e( 'View Users', 'rgbmind-ephemere' ); ?>
+								</a>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+
+			<?php do_action( 'rgbmind_eph_render_dashboard_rbac_pro' ); ?>
+
+			<div class="card" style="padding: 20px; max-width: none; background: #fafafa; border-left: 4px solid #2271b1;">
+				<h3 style="margin-top: 0; color: #1d2327;">
+					💡 <?php esc_html_e( 'RBAC Zero-Trust Best Practices', 'rgbmind-ephemere' ); ?>
+				</h3>
+				<ul style="margin: 0; padding-left: 20px; color: #50575e; font-size: 13px; line-height: 1.8;">
+					<li><strong><?php esc_html_e( 'Principle of Least Privilege:', 'rgbmind-ephemere' ); ?></strong> <?php esc_html_e( 'Never grant Administrator rights to temporary contractors if Editor or Shop Manager is sufficient for their task.', 'rgbmind-ephemere' ); ?></li>
+					<li><strong><?php esc_html_e( 'Automatic Expiration:', 'rgbmind-ephemere' ); ?></strong> <?php esc_html_e( 'Pair every temporary role with a strict expiration time or login limit to eliminate dormant accounts.', 'rgbmind-ephemere' ); ?></li>
+					<li><strong><?php esc_html_e( 'Native WordPress Permissions:', 'rgbmind-ephemere' ); ?></strong> <?php esc_html_e( 'RGBmind Ephemere enforces expiration without modifying native WordPress capabilities or role hierarchies.', 'rgbmind-ephemere' ); ?></li>
+				</ul>
+			</div>
+
+		<!-- TAB 3: MAC & COMPLIANCE (MANDATORY ACCESS CONTROL) -->
+		<?php elseif ( 'mac' === $active_tab ) : ?>
+			<div style="margin-bottom: 20px;">
+				<p style="margin: 0; color: #50575e; font-size: 13.5px;">
+					<?php esc_html_e( 'Mandatory Access Control (MAC) enforces strict, non-bypassable system policies across all sessions and requests.', 'rgbmind-ephemere' ); ?>
+				</p>
+			</div>
+
+			<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 25px;">
+				<div style="background: #fff; border: 1px solid #dcdcde; border-left: 4px solid #d63638; border-radius: 4px; padding: 15px 18px;">
+					<h3 style="margin: 0 0 8px; font-size: 14px; color: #1d2327;">
+						🛑 <?php esc_html_e( 'Instant Kill-Switch', 'rgbmind-ephemere' ); ?>
+					</h3>
+					<p style="margin: 0; color: #50575e; font-size: 12.5px; line-height: 1.5;">
+						<?php esc_html_e( 'Hard lockout override. When an account is locked, WordPress authentication terminates immediately at priority 30, preventing any valid password from granting access.', 'rgbmind-ephemere' ); ?>
+					</p>
+					<div style="margin-top: 10px;">
+						<span style="font-weight: 700; font-size: 11px; background: #edfaef; color: #007017; border: 1px solid #ceead6; padding: 2px 7px; border-radius: 10px;">
+							✔ <?php esc_html_e( 'POLICY ACTIVE', 'rgbmind-ephemere' ); ?>
+						</span>
+					</div>
+				</div>
+
+				<div style="background: #fff; border: 1px solid #dcdcde; border-left: 4px solid #2271b1; border-radius: 4px; padding: 15px 18px;">
+					<h3 style="margin: 0 0 8px; font-size: 14px; color: #1d2327;">
+						⚡ <?php esc_html_e( 'Zero-Trust Session Revocation', 'rgbmind-ephemere' ); ?>
+					</h3>
+					<p style="margin: 0; color: #50575e; font-size: 12.5px; line-height: 1.5;">
+						<?php esc_html_e( 'Real-time cookie destruction. If a user’s expiration date arrives while they are logged in, active session tokens are destroyed on the next HTTP request.', 'rgbmind-ephemere' ); ?>
+					</p>
+					<div style="margin-top: 10px;">
+						<span style="font-weight: 700; font-size: 11px; background: #edfaef; color: #007017; border: 1px solid #ceead6; padding: 2px 7px; border-radius: 10px;">
+							✔ <?php esc_html_e( 'POLICY ACTIVE', 'rgbmind-ephemere' ); ?>
+						</span>
+					</div>
+				</div>
+
+				<div style="background: #fff; border: 1px solid #dcdcde; border-left: 4px solid #007017; border-radius: 4px; padding: 15px 18px;">
+					<h3 style="margin: 0 0 8px; font-size: 14px; color: #1d2327;">
+						🛡️ <?php esc_html_e( 'GDPR & Database Integrity', 'rgbmind-ephemere' ); ?>
+					</h3>
+					<p style="margin: 0; color: #50575e; font-size: 12.5px; line-height: 1.5;">
+						<?php esc_html_e( 'Zero custom database tables and zero external tracking. All security controls adhere to native WordPress metadata standards for complete audit transparency.', 'rgbmind-ephemere' ); ?>
+					</p>
+					<div style="margin-top: 10px;">
+						<span style="font-weight: 700; font-size: 11px; background: #edfaef; color: #007017; border: 1px solid #ceead6; padding: 2px 7px; border-radius: 10px;">
+							✔ <?php esc_html_e( 'POLICY ACTIVE', 'rgbmind-ephemere' ); ?>
+						</span>
+					</div>
+				</div>
+			</div>
+
+			<!-- PRO Hook for Global Audit Trail -->
+			<?php do_action( 'rgbmind_eph_render_dashboard_mac_pro' ); ?>
+
+			<?php if ( ! $is_pro ) : ?>
+				<div class="card" style="padding: 25px; max-width: none; background: #fafafa; border-left: 4px solid #2271b1;">
+					<h3 style="margin-top: 0; color: #1d2327;">
+						📋 <?php esc_html_e( 'Global Access Audit Trail & Compliance Alerts', 'rgbmind-ephemere' ); ?>
+					</h3>
+					<p style="color: #50575e; font-size: 13.5px; max-width: 800px;">
+						<?php esc_html_e( 'Need centralized audit records of contractor logins? RGBmind Ephemere PRO provides automated access logs with GDPR-anonymized IP addresses, authentication methods, and real-time security alerts (Email & Webhook).', 'rgbmind-ephemere' ); ?>
+					</p>
+					<div style="margin-top: 15px;">
+						<a href="<?php echo esc_url( RGBMIND_EPH_PRO_URL ); ?>" target="_blank" rel="noopener noreferrer" class="button button-primary">
+							<?php esc_html_e( 'Unlock Global Audit Trail in PRO', 'rgbmind-ephemere' ); ?> &rarr;
+						</a>
+					</div>
+				</div>
+			<?php endif; ?>
+
+		<!-- TAB 4: SETTINGS & PRO EXTENSIONS -->
 		<?php else : ?>
 			<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; max-width: 1200px;">
 				<!-- Main Column -->
