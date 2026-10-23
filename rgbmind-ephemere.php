@@ -29,6 +29,7 @@ define( 'RGBMIND_EPH_PLUGIN_FILE', __FILE__ );
 define( 'RGBMIND_EPH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RGBMIND_EPH_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'RGBMIND_EPH_PRO_URL', 'https://rgbmind.com/ephemere/' );
+define( 'RGBMIND_EPH_BUG_REPORT_URL', 'https://rgbmind.com/bug-report/?product=rgbmind-ephemere' );
 
 /* =========================================================================
  * 1. EXTENSIBILITY & PRO ADDON HOOKS
@@ -928,17 +929,23 @@ function rgbmind_eph_render_dashboard() {
 				<span>⏱️ <?php esc_html_e( 'RGBmind Ephemere – IAM & Access Dashboard', 'rgbmind-ephemere' ); ?></span>
 				<span style="font-size: 11px; font-weight: 600; color: #50575e; background: #f0f0f1; border: 1px solid #dcdcde; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.5px;">v<?php echo esc_html( RGBMIND_EPH_VERSION ); ?></span>
 			</span>
-			<?php if ( $is_pro ) : ?>
-				<span style="background: #e6f4ea; color: #137333; font-weight: 700; font-size: 12px; padding: 5px 12px; border-radius: 12px; border: 1px solid #ceead6; letter-spacing: 0.5px;">
-					✔ PRO LICENSE ACTIVE
-				</span>
-			<?php else : ?>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=settings' ) ); ?>" style="text-decoration: none;">
-					<span style="background: #fef7e0; color: #b06000; font-weight: 700; font-size: 12px; padding: 5px 12px; border-radius: 12px; border: 1px solid #fce8b2; letter-spacing: 0.5px;">
-						FREE VERSION (UPGRADE PRO)
-					</span>
+			<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+				<a href="<?php echo esc_url( RGBMIND_EPH_BUG_REPORT_URL ); ?>" target="_blank" rel="noopener noreferrer" class="button" style="color: #ef4444; border-color: #ef4444; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+					<span class="dashicons dashicons-flag" style="font-size: 16px; width: 16px; height: 16px; line-height: 16px;"></span>
+					<?php esc_html_e( 'Report a Bug', 'rgbmind-ephemere' ); ?>
 				</a>
-			<?php endif; ?>
+				<?php if ( $is_pro ) : ?>
+					<span style="background: #e6f4ea; color: #137333; font-weight: 700; font-size: 12px; padding: 5px 12px; border-radius: 12px; border: 1px solid #ceead6; letter-spacing: 0.5px;">
+						✔ PRO LICENSE ACTIVE
+					</span>
+				<?php else : ?>
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=settings' ) ); ?>" style="text-decoration: none;">
+						<span style="background: #fef7e0; color: #b06000; font-weight: 700; font-size: 12px; padding: 5px 12px; border-radius: 12px; border: 1px solid #fce8b2; letter-spacing: 0.5px;">
+							FREE VERSION (UPGRADE PRO)
+						</span>
+					</a>
+				<?php endif; ?>
+			</div>
 		</h1>
 
 		<?php if ( ! empty( $notice ) ) : ?>
@@ -1450,7 +1457,13 @@ function rgbmind_eph_render_dashboard() {
 							<a href="<?php echo esc_url( RGBMIND_EPH_PRO_URL ); ?>" target="_blank" rel="noopener noreferrer" class="button button-secondary" style="width: 100%; text-align: center; text-decoration: none;">
 								<?php esc_html_e( 'Visit RGBmind.com →', 'rgbmind-ephemere' ); ?>
 							</a>
-							<p style="margin: 12px 0 0; color: #8c8f94; font-size: 11px;">
+							<div style="margin-top: 10px;">
+								<a href="<?php echo esc_url( RGBMIND_EPH_BUG_REPORT_URL ); ?>" target="_blank" rel="noopener noreferrer" style="color: #ef4444; font-weight: 600; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+									<span class="dashicons dashicons-flag" style="font-size: 14px; width: 14px; height: 14px; line-height: 14px;"></span>
+									<?php esc_html_e( 'Report a Bug', 'rgbmind-ephemere' ); ?>
+								</a>
+							</div>
+							<p style="margin: 10px 0 0; color: #8c8f94; font-size: 11px;">
 								RGBmind Ephemere v<?php echo esc_html( RGBMIND_EPH_VERSION ); ?>
 							</p>
 						</div>
@@ -1582,6 +1595,7 @@ add_filter( 'plugin_action_links_' . plugin_basename( RGBMIND_EPH_PLUGIN_FILE ),
 function rgbmind_eph_add_plugin_row_meta( $plugin_meta, $plugin_file ) {
 	if ( plugin_basename( RGBMIND_EPH_PLUGIN_FILE ) === $plugin_file ) {
 		$plugin_meta[] = '<a href="https://wordpress.org/support/plugin/rgbmind-ephemere/reviews/#new-post" target="_blank" rel="noopener noreferrer" style="color: #855d10; font-weight: 600;">' . esc_html__( 'Rate ★★★★★', 'rgbmind-ephemere' ) . '</a>';
+		$plugin_meta[] = '<a href="' . esc_url( RGBMIND_EPH_BUG_REPORT_URL ) . '" target="_blank" rel="noopener noreferrer" style="color:#ef4444;font-weight:600;"><span class="dashicons dashicons-flag"></span> ' . esc_html__( 'Report a Bug', 'rgbmind-ephemere' ) . '</a>';
 	}
 	return $plugin_meta;
 }

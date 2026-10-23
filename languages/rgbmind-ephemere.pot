@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-23T09:20:00+00:00\n"
+"POT-Creation-Date: 2026-10-23T11:42:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: RGBmind Ephemere POT Generator\n"
 "X-Domain: rgbmind-ephemere\n"
@@ -234,6 +234,9 @@ msgid "PRO settings updated successfully."
 msgstr ""
 
 msgid "RGBmind Ephemere – IAM & Access Dashboard"
+msgstr ""
+
+msgid "Report a Bug"
 msgstr ""
 
 msgid "JIT Access"
