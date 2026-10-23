@@ -898,7 +898,7 @@ function rgbmind_eph_render_dashboard() {
 				$notice_type = 'success';
 				break;
 			case 'invalid_key':
-				$notice      = __( '❌ Invalid license key. Please check your key or contact support.', 'rgbmind-ephemere' );
+				$notice      = __( '❌ Invalid license key. Please check your key on Lemon Squeezy.', 'rgbmind-ephemere' );
 				$notice_type = 'error';
 				break;
 			case 'deactivated':
@@ -1368,6 +1368,7 @@ function rgbmind_eph_render_dashboard() {
 								<a href="<?php echo esc_url( admin_url( 'profile.php' ) ); ?>"><?php esc_html_e( 'Users → Profile → Language', 'rgbmind-ephemere' ); ?></a>
 							</li>
 						</ul>
+
 						<p style="color: #646970; font-size: 12.5px; margin-top: 15px; margin-bottom: 0;">
 							<?php
 							printf(
@@ -1419,10 +1420,10 @@ function rgbmind_eph_render_dashboard() {
 								</div>
 								<div style="background: #fff; padding: 12px 16px; border: 1px solid #dcdcde; border-radius: 4px;">
 									<strong style="display: block; font-size: 13px; color: #1d2327; margin-bottom: 4px;">
-										🚀 <?php esc_html_e( 'Priority Direct Support', 'rgbmind-ephemere' ); ?>
+										🚀 <?php esc_html_e( 'Continuous Updates & Bug Fixes', 'rgbmind-ephemere' ); ?>
 									</strong>
 									<span style="font-size: 12.5px; color: #646970;">
-										<?php esc_html_e( 'Dedicated technical assistance from our development and security team.', 'rgbmind-ephemere' ); ?>
+										<?php esc_html_e( 'Regular software enhancements, bug fixes, and security patches provided as-is.', 'rgbmind-ephemere' ); ?>
 									</span>
 								</div>
 							</div>
@@ -1452,6 +1453,11 @@ function rgbmind_eph_render_dashboard() {
 							<li><strong>✔ <?php esc_html_e( 'Clean Architecture:', 'rgbmind-ephemere' ); ?></strong> <?php esc_html_e( 'Uses standard WordPress user metadata.', 'rgbmind-ephemere' ); ?></li>
 							<li><strong>✔ <?php esc_html_e( 'Translation Ready:', 'rgbmind-ephemere' ); ?></strong> <?php esc_html_e( 'Fully internationalized with native WordPress localization standards.', 'rgbmind-ephemere' ); ?></li>
 						</ul>
+						<p style="margin: 12px 0 0; padding: 8px 10px; background: #f6f7f7; border-radius: 4px; font-size: 11.5px; color: #646970; border-left: 3px solid #8c8f94; line-height: 1.4;">
+							<?php esc_html_e( 'Notice: Software provided "as is" without 1-on-1 support. Technical issues and bug reports can be submitted via the Bug Report Hub.', 'rgbmind-ephemere' ); ?>
+						</p>
+
+
 
 						<div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #f0f0f1; text-align: center;">
 							<a href="<?php echo esc_url( RGBMIND_EPH_PRO_URL ); ?>" target="_blank" rel="noopener noreferrer" class="button button-secondary" style="width: 100%; text-align: center; text-decoration: none;">

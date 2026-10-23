@@ -224,7 +224,7 @@ msgstr ""
 msgid "🎉 Congratulations! PRO license activated successfully. All premium features are now unlocked."
 msgstr ""
 
-msgid "❌ Invalid license key. Please check your key or contact support."
+msgid "❌ Invalid license key. Please check your key on Lemon Squeezy."
 msgstr ""
 
 msgid "PRO license deactivated. The plugin has returned to the standard mode."
@@ -449,10 +449,10 @@ msgstr ""
 msgid "Get instant notifications on account expiration or lockout (Slack, Discord, Zapier)."
 msgstr ""
 
-msgid "Priority Direct Support"
+msgid "Continuous Updates & Bug Fixes"
 msgstr ""
 
-msgid "Dedicated technical assistance from our development and security team."
+msgid "Regular software enhancements, bug fixes, and security patches provided as-is."
 msgstr ""
 
 msgid "Learn more about Ephemere PRO at rgbmind.com"
@@ -570,4 +570,7 @@ msgid "Permission denied."
 msgstr ""
 
 msgid "Unauthorized operation."
+msgstr ""
+
+msgid "Notice: Software provided \"as is\" without 1-on-1 support. Technical issues and bug reports can be submitted via the Bug Report Hub."
 msgstr ""
