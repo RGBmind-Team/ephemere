@@ -930,10 +930,6 @@ function rgbmind_eph_render_dashboard() {
 				<span style="font-size: 11px; font-weight: 600; color: #50575e; background: #f0f0f1; border: 1px solid #dcdcde; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.5px;">v<?php echo esc_html( RGBMIND_EPH_VERSION ); ?></span>
 			</span>
 			<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-				<a href="<?php echo esc_url( RGBMIND_EPH_BUG_REPORT_URL ); ?>" target="_blank" rel="noopener noreferrer" class="button" style="color: #ef4444; border-color: #ef4444; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
-					<span class="dashicons dashicons-flag" style="font-size: 16px; width: 16px; height: 16px; line-height: 16px;"></span>
-					<?php esc_html_e( 'Report a Bug', 'rgbmind-ephemere' ); ?>
-				</a>
 				<?php if ( $is_pro ) : ?>
 					<span style="background: #e6f4ea; color: #137333; font-weight: 700; font-size: 12px; padding: 5px 12px; border-radius: 12px; border: 1px solid #ceead6; letter-spacing: 0.5px;">
 						✔ PRO LICENSE ACTIVE
@@ -1464,7 +1460,7 @@ function rgbmind_eph_render_dashboard() {
 								<?php esc_html_e( 'Visit RGBmind.com →', 'rgbmind-ephemere' ); ?>
 							</a>
 							<div style="margin-top: 10px;">
-								<a href="<?php echo esc_url( RGBMIND_EPH_BUG_REPORT_URL ); ?>" target="_blank" rel="noopener noreferrer" style="color: #ef4444; font-weight: 600; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+								<a href="<?php echo esc_url( RGBMIND_EPH_BUG_REPORT_URL ); ?>" target="_blank" rel="noopener noreferrer" style="color: #646970; font-weight: 500; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
 									<span class="dashicons dashicons-flag" style="font-size: 14px; width: 14px; height: 14px; line-height: 14px;"></span>
 									<?php esc_html_e( 'Report a Bug', 'rgbmind-ephemere' ); ?>
 								</a>
@@ -1492,9 +1488,37 @@ function rgbmind_eph_render_dashboard() {
 				</div>
 			</div>
 		<?php endif; ?>
+		<div style="margin-top: 35px; padding-top: 15px; border-top: 1px solid #dcdcde; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #646970; flex-wrap: wrap; gap: 10px;">
+			<span>
+				RGBmind Ephemere v<?php echo esc_html( RGBMIND_EPH_VERSION ); ?> &bull; <?php esc_html_e( 'Secure Temporary Access & IAM for WordPress', 'rgbmind-ephemere' ); ?>
+			</span>
+			<a href="<?php echo esc_url( apply_filters( 'rgbmind_eph_bug_report_url', RGBMIND_EPH_BUG_REPORT_URL ) ); ?>" target="_blank" rel="noopener noreferrer" style="color: #646970; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">
+				<span class="dashicons dashicons-flag" style="font-size: 14px; width: 14px; height: 14px; line-height: 14px; color: #ef4444;"></span>
+				<?php esc_html_e( 'Report a Bug', 'rgbmind-ephemere' ); ?>
+			</a>
+		</div>
 	</div>
 	<?php
 }
+
+
+/**
+ * Filters the WordPress admin footer text to include a discreet Bug Report link on Ephemere pages.
+ *
+ * @param string $text Existing admin footer text.
+ * @return string
+ */
+function rgbmind_eph_filter_admin_footer_text( $text ) {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( isset( $_GET['page'] ) && 'rgbmind-ephemere' === $_GET['page'] ) {
+		$bug_url  = apply_filters( 'rgbmind_eph_bug_report_url', RGBMIND_EPH_BUG_REPORT_URL );
+		$bug_link = '<a href="' . esc_url( $bug_url ) . '" target="_blank" rel="noopener noreferrer" style="color: #646970; text-decoration: none; display: inline-flex; align-items: center; gap: 3px; font-weight: 500; margin-left: 8px;"><span class="dashicons dashicons-flag" style="font-size: 13px; width: 13px; height: 13px; line-height: 13px; color: #ef4444; vertical-align: text-bottom;"></span> ' . esc_html__( 'Report a Bug', 'rgbmind-ephemere' ) . '</a>';
+		return $text . ' &bull; ' . $bug_link;
+	}
+	return $text;
+}
+add_filter( 'admin_footer_text', 'rgbmind_eph_filter_admin_footer_text' );
+
 
 /* =========================================================================
  * 8. USERS TABLE, PLUGIN ACTION LINKS & ONBOARDING
