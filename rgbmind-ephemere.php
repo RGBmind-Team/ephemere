@@ -186,7 +186,8 @@ function rgbmind_eph_render_user_profile_fields( $user ) {
 	?>
 	<div class="rgbmind-ephemere-wrapper" style="margin-top: 25px;">
 		<div style="display: flex; align-items: center; justify-content: space-between; max-width: 850px; flex-wrap: wrap; gap: 10px;">
-			<h2 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+			<h2 style="margin: 0; display: flex; align-items: center; gap: 10px;">
+				<img src="<?php echo esc_url( RGBMIND_EPH_PLUGIN_URL . 'assets/images/logo.png' ); ?>" alt="RGBmind" style="width: 24px; height: 24px; object-fit: contain; vertical-align: middle;" />
 				<span><?php esc_html_e( 'RGBmind Ephemere – IAM & Access Control', 'rgbmind-ephemere' ); ?></span>
 				<span style="font-size: 11px; font-weight: 600; color: #646970; background: #f0f0f1; border: 1px solid #dcdcde; padding: 2px 7px; border-radius: 10px;">v<?php echo esc_html( RGBMIND_EPH_VERSION ); ?></span>
 			</h2>
@@ -926,7 +927,8 @@ function rgbmind_eph_render_dashboard() {
 	<div class="wrap">
 		<h1 style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
 			<span style="display: flex; align-items: center; gap: 10px;">
-				<span>⏱️ <?php esc_html_e( 'RGBmind Ephemere – IAM & Access Dashboard', 'rgbmind-ephemere' ); ?></span>
+				<img src="<?php echo esc_url( RGBMIND_EPH_PLUGIN_URL . 'assets/images/logo.png' ); ?>" alt="RGBmind" style="width: 32px; height: 32px; object-fit: contain; vertical-align: middle; border-radius: 4px;" />
+				<span><?php esc_html_e( 'RGBmind Ephemere – IAM & Access Dashboard', 'rgbmind-ephemere' ); ?></span>
 				<span style="font-size: 11px; font-weight: 600; color: #50575e; background: #f0f0f1; border: 1px solid #dcdcde; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.5px;">v<?php echo esc_html( RGBMIND_EPH_VERSION ); ?></span>
 			</span>
 			<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
@@ -1436,9 +1438,12 @@ function rgbmind_eph_render_dashboard() {
 				<!-- Sidebar: Plugin Info -->
 				<div>
 					<div class="card" style="margin: 0; padding: 20px; background: #fff; border-top: 4px solid #2271b1;">
-						<h3 style="margin-top: 0; font-size: 16px; color: #1d2327;">
-							<?php esc_html_e( 'About RGBmind Ephemere', 'rgbmind-ephemere' ); ?>
-						</h3>
+						<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+							<img src="<?php echo esc_url( RGBMIND_EPH_PLUGIN_URL . 'assets/images/logo.png' ); ?>" alt="RGBmind" style="width: 26px; height: 26px; object-fit: contain;" />
+							<h3 style="margin: 0; font-size: 16px; color: #1d2327;">
+								<?php esc_html_e( 'About RGBmind Ephemere', 'rgbmind-ephemere' ); ?>
+							</h3>
+						</div>
 						<p style="color: #50575e; font-size: 13px; line-height: 1.5;">
 							<?php esc_html_e( 'RGBmind Ephemere provides secure, native temporary user access management for WordPress sites with zero external tracking and zero bloated database tables.', 'rgbmind-ephemere' ); ?>
 						</p>
