@@ -933,9 +933,11 @@ function rgbmind_eph_render_dashboard() {
 			</span>
 			<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
 				<?php if ( $is_pro ) : ?>
-					<span style="background: #e6f4ea; color: #137333; font-weight: 700; font-size: 12px; padding: 5px 12px; border-radius: 12px; border: 1px solid #ceead6; letter-spacing: 0.5px;">
-						✔ PRO LICENSE ACTIVE
-					</span>
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=settings' ) ); ?>" style="text-decoration: none;">
+						<span style="background: #e6f4ea; color: #137333; font-weight: 700; font-size: 12px; padding: 5px 12px; border-radius: 12px; border: 1px solid #ceead6; letter-spacing: 0.5px;">
+							✔ PRO LICENSE ACTIVE
+						</span>
+					</a>
 				<?php else : ?>
 					<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=settings' ) ); ?>" style="text-decoration: none;">
 						<span style="background: #fef7e0; color: #b06000; font-weight: 700; font-size: 12px; padding: 5px 12px; border-radius: 12px; border: 1px solid #fce8b2; letter-spacing: 0.5px;">
@@ -964,7 +966,7 @@ function rgbmind_eph_render_dashboard() {
 				🔒 <?php esc_html_e( 'MAC & Compliance', 'rgbmind-ephemere' ); ?>
 			</a>
 			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=settings' ) ); ?>" class="nav-tab <?php echo 'settings' === $active_tab ? 'nav-tab-active' : ''; ?>">
-				⚙️ <?php esc_html_e( 'Settings & License', 'rgbmind-ephemere' ); ?>
+				🔑 <?php esc_html_e( 'License & Settings', 'rgbmind-ephemere' ); ?>
 			</a>
 		</nav>
 
@@ -1345,39 +1347,6 @@ function rgbmind_eph_render_dashboard() {
 			<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; max-width: 1200px;">
 				<!-- Main Column -->
 				<div>
-					<!-- Language & Localization Info Box -->
-					<div class="card" style="margin: 0 0 20px 0; padding: 20px; max-width: none;">
-						<h2 style="margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #f0f0f1;">
-							🌐 <?php esc_html_e( 'Language & Localization', 'rgbmind-ephemere' ); ?>
-						</h2>
-						<p style="color: #50575e; font-size: 13.5px; margin-top: 10px;">
-							<?php esc_html_e( 'RGBmind Ephemere is fully internationalized and automatically follows your native WordPress language settings.', 'rgbmind-ephemere' ); ?>
-						</p>
-						<p style="color: #50575e; font-size: 13px; margin-bottom: 6px;">
-							<?php esc_html_e( 'To change your language, use the standard WordPress settings:', 'rgbmind-ephemere' ); ?>
-						</p>
-						<ul style="list-style: disc; margin-left: 20px; color: #50575e; font-size: 13px; line-height: 1.8;">
-							<li>
-								<strong><?php esc_html_e( 'Site-wide language:', 'rgbmind-ephemere' ); ?></strong>
-								<a href="<?php echo esc_url( admin_url( 'options-general.php' ) ); ?>"><?php esc_html_e( 'Settings → General → Site Language', 'rgbmind-ephemere' ); ?></a>
-							</li>
-							<li>
-								<strong><?php esc_html_e( 'Individual profile language:', 'rgbmind-ephemere' ); ?></strong>
-								<a href="<?php echo esc_url( admin_url( 'profile.php' ) ); ?>"><?php esc_html_e( 'Users → Profile → Language', 'rgbmind-ephemere' ); ?></a>
-							</li>
-						</ul>
-
-						<p style="color: #646970; font-size: 12.5px; margin-top: 15px; margin-bottom: 0;">
-							<?php
-							printf(
-								/* translators: %s: translate.wordpress.org link */
-								esc_html__( 'Community translations and additional languages are managed through %s.', 'rgbmind-ephemere' ),
-								'<a href="https://translate.wordpress.org/projects/wp-plugins/rgbmind-ephemere/" target="_blank" rel="noopener noreferrer">translate.wordpress.org</a>'
-							);
-							?>
-						</p>
-					</div>
-
 					<!-- PRO Hook for Companion Add-on Settings -->
 					<?php do_action( 'rgbmind_eph_render_dashboard_pro_settings' ); ?>
 
@@ -1433,6 +1402,39 @@ function rgbmind_eph_render_dashboard() {
 							</p>
 						</div>
 					<?php endif; ?>
+
+					<!-- Language & Localization Info Box -->
+					<div class="card" style="margin: 0 0 20px 0; padding: 20px; max-width: none;">
+						<h2 style="margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #f0f0f1;">
+							🌐 <?php esc_html_e( 'Language & Localization', 'rgbmind-ephemere' ); ?>
+						</h2>
+						<p style="color: #50575e; font-size: 13.5px; margin-top: 10px;">
+							<?php esc_html_e( 'RGBmind Ephemere is fully internationalized and automatically follows your native WordPress language settings.', 'rgbmind-ephemere' ); ?>
+						</p>
+						<p style="color: #50575e; font-size: 13px; margin-bottom: 6px;">
+							<?php esc_html_e( 'To change your language, use the standard WordPress settings:', 'rgbmind-ephemere' ); ?>
+						</p>
+						<ul style="list-style: disc; margin-left: 20px; color: #50575e; font-size: 13px; line-height: 1.8;">
+							<li>
+								<strong><?php esc_html_e( 'Site-wide language:', 'rgbmind-ephemere' ); ?></strong>
+								<a href="<?php echo esc_url( admin_url( 'options-general.php' ) ); ?>"><?php esc_html_e( 'Settings → General → Site Language', 'rgbmind-ephemere' ); ?></a>
+							</li>
+							<li>
+								<strong><?php esc_html_e( 'Individual profile language:', 'rgbmind-ephemere' ); ?></strong>
+								<a href="<?php echo esc_url( admin_url( 'profile.php' ) ); ?>"><?php esc_html_e( 'Users → Profile → Language', 'rgbmind-ephemere' ); ?></a>
+							</li>
+						</ul>
+
+						<p style="color: #646970; font-size: 12.5px; margin-top: 15px; margin-bottom: 0;">
+							<?php
+							printf(
+								/* translators: %s: translate.wordpress.org link */
+								esc_html__( 'Community translations and additional languages are managed through %s.', 'rgbmind-ephemere' ),
+								'<a href="https://translate.wordpress.org/projects/wp-plugins/rgbmind-ephemere/" target="_blank" rel="noopener noreferrer">translate.wordpress.org</a>'
+							);
+							?>
+						</p>
+					</div>
 				</div>
 
 				<!-- Sidebar: Plugin Info -->
