@@ -1,8 +1,8 @@
-# Copyright (C) 2026 RGBmind
+﻿# Copyright (C) 2026 RGBmind
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: RGBmind Ephemere 1.2.2\n"
+"Project-Id-Version: RGBmind Ephemere 1.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/rgbmind-ephemere\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,7 +56,7 @@ msgstr ""
 msgid "Standard Privilege"
 msgstr ""
 
-msgid "Critical (Full Site Control)"
+msgid "Critical (Full Site Access)"
 msgstr ""
 
 msgid "Elevated (Content & Store)"
@@ -104,7 +104,7 @@ msgstr ""
 msgid "Maximum Number of Logins"
 msgstr ""
 
-msgid "allowed logins (0 = unlimited)."
+msgid "Maximum allowed logins (0 = unlimited)."
 msgstr ""
 
 msgid "Logins Used"
@@ -155,10 +155,10 @@ msgstr ""
 msgid "System-enforced lockouts, non-bypassable kill-switches, and audit trail records."
 msgstr ""
 
-msgid "System Kill Switch"
+msgid "Instant Account Lockout"
 msgstr ""
 
-msgid "Instantly block access for this user account (Hard Lock)"
+msgid "Instantly lock this account and block access"
 msgstr ""
 
 msgid "Mandatory system policy: When locked, any login attempt will be immediately rejected regardless of expiration timer or remaining login count."
@@ -224,7 +224,7 @@ msgstr ""
 msgid "🎉 Congratulations! PRO license activated successfully. All premium features are now unlocked."
 msgstr ""
 
-msgid "❌ Invalid license key. Please check your key on Lemon Squeezy."
+msgid "❌ Invalid license key. Please check your key and try again."
 msgstr ""
 
 msgid "PRO license deactivated. The plugin has returned to the standard mode."
@@ -314,7 +314,7 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-msgid "Role-Based Access Control (RBAC) matrix for temporary and permanent WordPress users."
+msgid "Overview of WordPress roles and privilege distribution to monitor temporary accounts under the principle of least privilege."
 msgstr ""
 
 msgid "Manage WordPress Users & Roles"
@@ -374,7 +374,7 @@ msgstr ""
 msgid "Instant Kill-Switch"
 msgstr ""
 
-msgid "Hard lockout override. When an account is locked, WordPress authentication terminates immediately at priority 30, preventing any valid password from granting access."
+msgid "Hard lockout override. When an account is locked, WordPress authentication terminates immediately, preventing any valid password from granting access."
 msgstr ""
 
 msgid "POLICY ACTIVE"
@@ -383,7 +383,7 @@ msgstr ""
 msgid "Zero-Trust Session Revocation"
 msgstr ""
 
-msgid "Real-time cookie destruction. If a user’s expiration date arrives while they are logged in, active session tokens are destroyed on the next HTTP request."
+msgid "Instant session invalidation. Active session tokens and authentication cookies are invalidated immediately on the next request. If a user’s expiration date arrives while they are logged in, active session tokens are destroyed on the next HTTP request."
 msgstr ""
 
 msgid "GDPR & Database Integrity"
@@ -560,7 +560,7 @@ msgstr ""
 msgid "Open Ephemere Dashboard"
 msgstr ""
 
-msgid "Settings & Extensions"
+msgid "Settings"
 msgstr ""
 
 msgid "Do not show again"
@@ -573,4 +573,25 @@ msgid "Unauthorized operation."
 msgstr ""
 
 msgid "Notice: Software provided \"as is\" without 1-on-1 support. Technical issues and bug reports can be submitted via the Bug Report Hub."
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Version & About"
+msgstr ""
+
+msgid "Bug Report & Feedback Hub"
+msgstr ""
+
+msgid "Found a technical issue, regression, or unexpected behavior? We actively welcome reproducible bug reports to help us maintain and refine RGBmind Ephemere."
+msgstr ""
+
+msgid "Report a Bug at rgbmind.com"
+msgstr ""
+
+msgid "Version %s • Native WordPress IAM & Temporary Access Manager"
+msgstr ""
+
+msgid "Notice: Software provided \"as is\" under standard licensing without 1-on-1 personalized support. Technical issues and bug reports are handled exclusively through the official Bug Report & Feedback Hub."
 msgstr ""

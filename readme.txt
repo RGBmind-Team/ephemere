@@ -5,7 +5,7 @@ Tags: temporary login, timed access, temporary users, access control, login limi
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.3
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,7 +54,7 @@ Visit [rgbmind.com/ephemere](https://rgbmind.com/ephemere/) to learn more about 
 1. Upload the `rgbmind-ephemere` folder to your `/wp-content/plugins/` directory, or upload the ZIP file through **Plugins > Add New > Upload Plugin**.
 2. Activate the plugin via the **Plugins** screen in WordPress.
 3. Go to **Users > All Users** and click **Edit** on the user you wish to make temporary.
-4. Scroll to the **RGBmind Ephemere – Temporary Access Management** section.
+4. Scroll to the **RGBmind Ephemere – IAM & Access Control** section.
 5. Check **Enable temporary access restrictions for this user** and configure the desired expiration date or maximum login count.
 6. To view an overview of temporary accounts or plugin settings, navigate to **RGBmind Ephemere** in your WordPress sidebar.
 

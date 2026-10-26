@@ -16,6 +16,21 @@ document.addEventListener('DOMContentLoaded', function() {
 	var resultBox  = document.getElementById('rgbmind-magic-link-result');
 	var inputField = document.getElementById('rgbmind_magic_url_field');
 	var nonceField = document.getElementById('rgbmind_eph_nonce');
+	var ttlSelect  = document.getElementById('rgbmind_magic_link_ttl');
+	var customWrap = document.getElementById('rgbmind_magic_custom_wrap');
+	var customVal  = document.getElementById('rgbmind_magic_custom_val');
+	var customUnit = document.getElementById('rgbmind_magic_custom_unit');
+	var expNotice  = document.getElementById('rgbmind-magic-link-expiration-notice');
+
+	if (ttlSelect && customWrap) {
+		ttlSelect.addEventListener('change', function() {
+			if (ttlSelect.value === 'custom') {
+				customWrap.style.display = 'inline-flex';
+			} else {
+				customWrap.style.display = 'none';
+			}
+		});
+	}
 
 	if (genBtn) {
 		genBtn.addEventListener('click', function() {
@@ -29,6 +44,23 @@ document.addEventListener('DOMContentLoaded', function() {
 			data.append('user_id', genBtn.getAttribute('data-userid'));
 			if (nonceField) {
 				data.append('nonce', nonceField.value);
+			}
+
+			if (ttlSelect) {
+				var ttlVal = ttlSelect.value;
+				if (ttlVal === 'custom' && customVal && customUnit) {
+					var num = parseInt(customVal.value, 10) || 1;
+					var unit = customUnit.value;
+					var mult = 3600;
+					if (unit === 'minutes') {
+						mult = 60;
+					} else if (unit === 'days') {
+						mult = 86400;
+					}
+					data.append('ttl', num * mult);
+				} else {
+					data.append('ttl', ttlVal);
+				}
 			}
 
 			var ajaxEndpoint = (window.rgbmindEphData && window.rgbmindEphData.ajaxUrl) ? window.rgbmindEphData.ajaxUrl : (window.ajaxurl || '/wp-admin/admin-ajax.php');
@@ -49,6 +81,25 @@ document.addEventListener('DOMContentLoaded', function() {
 					}
 					if (resultBox) {
 						resultBox.style.display = 'block';
+					}
+					var badge = document.getElementById('rgbmind-magic-expires-badge');
+					if (badge && response.data.expires_at) {
+						badge.textContent = 'Expires: ' + response.data.expires_at;
+						badge.style.display = 'inline-block';
+					}
+					var expNotice = document.getElementById('rgbmind-magic-link-expiration-notice');
+					if (expNotice && response.data.expires_at) {
+						var expiresPrefix = (window.rgbmindEphData && window.rgbmindEphData.linkExpiresPrefix) ? window.rgbmindEphData.linkExpiresPrefix : 'Active temporary link generated (expires on ';
+						expNotice.textContent = expiresPrefix + response.data.expires_at + ').';
+						expNotice.style.display = 'block';
+					}
+					var btnLabel = document.getElementById('rgbmind-gen-btn-label');
+					if (btnLabel) {
+						btnLabel.textContent = (window.rgbmindEphData && window.rgbmindEphData.regenerateText) ? window.rgbmindEphData.regenerateText : 'Regenerate Link';
+					}
+					if (genBtn) {
+						genBtn.classList.remove('button-primary');
+						genBtn.classList.add('button-secondary');
 					}
 				} else {
 					var errMsg = (response.data && response.data.message) ? response.data.message : 'Error generating magic link.';
