@@ -87,6 +87,16 @@ No. RGBmind Ephemere and RGBmind Ephemere PRO are provided "as is" under standar
 
 == Changelog ==
 
+= 1.3.0 =
+* 1-Click Quick Account Creation: instantly generate temporary accounts with customizable email alias patterns and JIT expirations.
+* Role & Capability Management (RBAC): create, clone, customize, and manage user roles and granular permissions.
+* Multi-Format Audit Export: download accounts and audit logs in CSV, OpenXML Excel (.xlsx), and JSON formats.
+* Native OpenXML Engine: pure-PHP spreadsheet generator with zero external PHP extension dependencies (no ZipArchive required).
+* CSV Security Hardening: formula injection mitigation across all exported files.
+* Creation Date Tracking: view account registration timestamps and relative time intervals across tables, profiles, and export reports.
+* Action Handling Architecture: decoupled dashboard actions to admin_init to ensure clean, header-safe redirects.
+* Header UI: added compact PRO security shield indicator.
+
 = 1.2.3 =
 * Security Architecture: introduced clear IAM separation into JIT (Just-In-Time Access), RBAC (Role-Based Access Control), and MAC (Mandatory Access Control) sections in both user profiles and administrative dashboard.
 * RBAC Matrix & Least-Privilege Protection: added visual role capability table and dynamic zero-trust warning badge when temporary accounts are granted Administrator privileges.
