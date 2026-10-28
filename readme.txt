@@ -5,7 +5,7 @@ Tags: temporary login, temporary access, expire users, temporary user, login lim
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -104,6 +104,13 @@ No. RGBmind Ephemere and RGBmind Ephemere PRO are provided "as is" under standar
 1. Temporary access restrictions and security status panel in WordPress user profile edit screen.
 
 == Changelog ==
+
+= 1.3.1 =
+* UI & UX Polishing: Enhanced status icons with clearer visual cues and increased contrast.
+* Account Details Drawer: Streamlined user info popover trigger and positioning for smoother inspection.
+* Settings Accordions: Restructured Settings tab into clean, collapsible accordion panels, closed by default with intuitive titles and context summaries.
+* Table Layout Optimization: Refined dashboard table structure and moved account count indicators to the table footer summary for improved layout balance.
+* Live Expiration Countdown: Added real-time ticker updating remaining access time dynamically.
 
 = 1.3.0 =
 * 1-Click Quick Account Creation: instantly generate temporary accounts with customizable email alias patterns and JIT expirations.

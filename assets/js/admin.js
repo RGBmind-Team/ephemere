@@ -159,4 +159,44 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		});
 	}
+
+	// 3. Live Countdown Timers for Magic Link and User Account Expiration
+	var countdownElements = document.querySelectorAll('.rgbmind-live-countdown');
+	if (countdownElements.length > 0) {
+		function updateCountdowns() {
+			var currentEpoch = Math.floor(Date.now() / 1000);
+			countdownElements.forEach(function(el) {
+				var targetEpoch = parseInt(el.getAttribute('data-timestamp'), 10);
+				if (!targetEpoch || isNaN(targetEpoch)) return;
+				var remaining = targetEpoch - currentEpoch;
+
+				if (remaining <= 0) {
+					el.textContent = 'Expired';
+					el.style.color = '#d63638';
+					el.style.background = '#fcf0f1';
+					el.style.borderColor = '#f5c2c7';
+					return;
+				}
+
+				var days = Math.floor(remaining / 86400);
+				var hours = Math.floor((remaining % 86400) / 3600);
+				var minutes = Math.floor((remaining % 3600) / 60);
+				var seconds = remaining % 60;
+
+				var str = '';
+				if (days > 0) {
+					str = days + 'd ' + (hours < 10 ? '0' : '') + hours + 'h ' + (minutes < 10 ? '0' : '') + minutes + 'm';
+				} else if (hours > 0) {
+					str = (hours < 10 ? '0' : '') + hours + 'h ' + (minutes < 10 ? '0' : '') + minutes + 'm ' + (seconds < 10 ? '0' : '') + seconds + 's';
+				} else {
+					str = (minutes < 10 ? '0' : '') + minutes + 'm ' + (seconds < 10 ? '0' : '') + seconds + 's';
+				}
+
+				el.textContent = str;
+			});
+		}
+
+		updateCountdowns();
+		setInterval(updateCountdowns, 1000);
+	}
 });

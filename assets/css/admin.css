@@ -34,3 +34,51 @@
 	color: #996800;
 	border: 1px solid #fcd34d;
 }
+
+
+/* Account Details Popup Trigger Button */
+.rgbmind-user-info-trigger {
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	width: 18px;
+	height: 18px;
+	min-width: 18px;
+	min-height: 18px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	padding: 0;
+	color: #646970;
+	transition: all 0.15s ease-in-out;
+	line-height: 1;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.rgbmind-user-info-trigger:hover,
+.rgbmind-user-info-trigger:focus {
+	background: #2271b1;
+	border-color: #2271b1;
+	color: #ffffff;
+	transform: scale(1.08);
+	outline: none;
+}
+
+.rgbmind-user-info-trigger .dashicons {
+	font-size: 11px;
+	width: 11px;
+	height: 11px;
+	line-height: 11px;
+}
+
+/* Collapsible Settings Accordion Cards */
+details.rgbmind-settings-details summary::-webkit-details-marker {
+	display: none;
+}
+details.rgbmind-settings-details summary:hover {
+	background: #f6f7f7;
+}
+details.rgbmind-settings-details[open] summary .dashicons-arrow-right-alt2 {
+	transform: rotate(90deg);
+}

@@ -3,7 +3,7 @@
  * Plugin Name:       RGBmind Ephemere
  * Plugin URI:        https://rgbmind.com/ephemere/
  * Description:       Advanced temporary login and timed access manager for WordPress users. Set expiration dates, max login limits, and instant account locking with zero custom database tables and zero external API calls.
- * Version:           1.3.0
+ * Version:           1.3.1
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            RGBmind
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin constants.
  */
-define( 'RGBMIND_EPH_VERSION', '1.3.0' );
+define( 'RGBMIND_EPH_VERSION', '1.3.1' );
 define( 'RGBMIND_EPH_PLUGIN_FILE', __FILE__ );
 define( 'RGBMIND_EPH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RGBMIND_EPH_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -1317,83 +1317,77 @@ function rgbmind_eph_render_dashboard() {
 			);
 			?>
 
-			<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
-				<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-					<?php rgbmind_eph_render_quick_create_form(); ?>
-					<?php
-					$active_count_tab = isset( $status_counts['active'] ) ? (int) $status_counts['active'] : 0;
-					$free_limit_tab   = rgbmind_eph_get_free_active_accounts_limit();
-					if ( ! $is_pro ) :
-					?>
-						<span style="display: inline-flex; align-items: center; gap: 5px; background: <?php echo ( $active_count_tab >= $free_limit_tab ) ? '#fef7e0' : '#f0f6fc'; ?>; color: <?php echo ( $active_count_tab >= $free_limit_tab ) ? '#b06000' : '#0969da'; ?>; border: 1px solid <?php echo ( $active_count_tab >= $free_limit_tab ) ? '#fce8b2' : '#c8e1ff'; ?>; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600;">
-							<span class="dashicons dashicons-admin-users" style="font-size: 14px; width: 14px; height: 14px; line-height: 14px;"></span>
-							<?php printf( esc_html__( 'Active: %1$d / %2$d (Free Plan)', 'rgbmind-ephemere' ), $active_count_tab, $free_limit_tab ); ?>
-							<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=settings' ) ); ?>" style="color: <?php echo ( $active_count_tab >= $free_limit_tab ) ? '#8a4b00' : '#0550ae'; ?>; text-decoration: underline; margin-left: 4px;">
-								<?php esc_html_e( 'Upgrade to PRO &rarr;', 'rgbmind-ephemere' ); ?>
-							</a>
-						</span>
-					<?php endif; ?>
-				</div>
-				<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-					<?php
-					if ( ! empty( $ephemeral_users ) ) {
+			<?php if ( ! empty( $ephemeral_users ) ) : ?>
+				<div class="rgbmind-unified-toolbar" style="display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: nowrap; background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; padding: 4px 8px; margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); white-space: nowrap; position: relative; z-index: 10;">
+					<!-- Left Section: Quick Create & Limit Badge -->
+					<div style="display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0;">
+						<?php rgbmind_eph_render_quick_create_form(); ?>
+						<?php
+						$active_count_tab = isset( $status_counts['active'] ) ? (int) $status_counts['active'] : 0;
+						$free_limit_tab   = rgbmind_eph_get_free_active_accounts_limit();
+						if ( ! $is_pro ) :
+						?>
+							<span style="display: inline-flex; align-items: center; gap: 3px; background: <?php echo ( $active_count_tab >= $free_limit_tab ) ? '#fef7e0' : '#f0f6fc'; ?>; color: <?php echo ( $active_count_tab >= $free_limit_tab ) ? '#b06000' : '#0969da'; ?>; border: 1px solid <?php echo ( $active_count_tab >= $free_limit_tab ) ? '#fce8b2' : '#c8e1ff'; ?>; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; height: 28px; line-height: 24px;" title="<?php printf( esc_attr__( 'Active: %1$d/%2$d', 'rgbmind-ephemere' ), $active_count_tab, $free_limit_tab ); ?>">
+								<span class="dashicons dashicons-admin-users" style="font-size: 13px; width: 13px; height: 13px; line-height: 13px;"></span>
+								<?php printf( '%1$d/%2$d', $active_count_tab, $free_limit_tab ); ?>
+								<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=settings' ) ); ?>" style="color: <?php echo ( $active_count_tab >= $free_limit_tab ) ? '#8a4b00' : '#0550ae'; ?>; text-decoration: underline; margin-left: 1px;" title="<?php esc_attr_e( 'Upgrade to PRO', 'rgbmind-ephemere' ); ?>">
+									PRO
+								</a>
+							</span>
+						<?php endif; ?>
+					</div>
+
+					<!-- Middle Section: Search & Filters -->
+					<form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" class="rgbmind-filter-form" style="display: inline-flex; align-items: center; gap: 4px; flex-shrink: 1; margin: 0;">
+						<input type="hidden" name="page" value="rgbmind-ephemere" />
+						<input type="hidden" name="tab" value="jit" />
+						<div style="position: relative; width: 130px; display: inline-flex; align-items: center;">
+							<span class="dashicons dashicons-search" style="position: absolute; left: 6px; top: 50%; transform: translateY(-50%); color: #8c8f94; font-size: 13px; width: 13px; height: 13px; line-height: 13px; pointer-events: none;"></span>
+							<input type="search" name="s" value="<?php echo esc_attr( $jit_filters['s'] ); ?>" placeholder="<?php esc_attr_e( 'Search…', 'rgbmind-ephemere' ); ?>" aria-label="<?php esc_attr_e( 'Search accounts', 'rgbmind-ephemere' ); ?>" style="width: 100%; padding: 0 8px 0 22px; height: 28px; min-height: 28px; line-height: 26px; font-size: 12px; margin: 0; box-sizing: border-box;" />
+						</div>
+						<select name="status" onchange="this.form.submit()" aria-label="<?php esc_attr_e( 'Filter by status', 'rgbmind-ephemere' ); ?>" style="height: 28px; min-height: 28px; line-height: 26px; font-size: 12px; margin: 0; padding: 0 24px 0 8px; max-width: 110px; vertical-align: middle;">
+							<option value=""><?php esc_html_e( 'All statuses', 'rgbmind-ephemere' ); ?></option>
+							<?php foreach ( $status_labels as $st_key => $st_label ) : ?>
+								<option value="<?php echo esc_attr( $st_key ); ?>" <?php selected( $jit_filters['status'], $st_key ); ?>><?php echo esc_html( $st_label . ' (' . $status_counts[ $st_key ] . ')' ); ?></option>
+							<?php endforeach; ?>
+						</select>
+						<select name="role" onchange="this.form.submit()" aria-label="<?php esc_attr_e( 'Filter by role', 'rgbmind-ephemere' ); ?>" style="height: 28px; min-height: 28px; line-height: 26px; font-size: 12px; margin: 0; padding: 0 24px 0 8px; max-width: 100px; vertical-align: middle;">
+							<option value=""><?php esc_html_e( 'All roles', 'rgbmind-ephemere' ); ?></option>
+							<?php foreach ( $jit_roles as $r_slug => $r_info ) : ?>
+								<option value="<?php echo esc_attr( $r_slug ); ?>" <?php selected( $jit_filters['role'], $r_slug ); ?>><?php echo esc_html( translate_user_role( $r_info['name'] ) ); ?></option>
+							<?php endforeach; ?>
+						</select>
+						<?php if ( $is_pro ) : ?>
+							<select name="ml" onchange="this.form.submit()" aria-label="<?php esc_attr_e( 'Filter by Magic Link', 'rgbmind-ephemere' ); ?>" style="height: 28px; min-height: 28px; line-height: 26px; font-size: 12px; margin: 0; padding: 0 24px 0 8px; width: auto; max-width: none; vertical-align: middle;">
+								<option value=""><?php esc_html_e( 'All Magic Links', 'rgbmind-ephemere' ); ?></option>
+								<option value="active" <?php selected( $jit_filters['ml'], 'active' ); ?>><?php esc_html_e( 'Active', 'rgbmind-ephemere' ); ?></option>
+								<option value="expired" <?php selected( $jit_filters['ml'], 'expired' ); ?>><?php esc_html_e( 'Expired', 'rgbmind-ephemere' ); ?></option>
+								<option value="none" <?php selected( $jit_filters['ml'], 'none' ); ?>><?php esc_html_e( 'Not generated', 'rgbmind-ephemere' ); ?></option>
+							</select>
+						<?php endif; ?>
+						<button type="submit" class="button button-secondary" style="height: 28px; min-height: 28px; line-height: 26px; font-size: 12px; padding: 0 8px; display: inline-flex; align-items: center; justify-content: center;"><?php esc_html_e( 'Filter', 'rgbmind-ephemere' ); ?></button>
+						<?php if ( $has_filters ) : ?>
+							<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=jit' ) ); ?>" style="color: #b32d2e; text-decoration: none; font-size: 12px; margin-left: 2px;" title="<?php esc_attr_e( 'Reset filters', 'rgbmind-ephemere' ); ?>">&times;</a>
+						<?php endif; ?>
+					</form>
+
+					<!-- Right Section: Account Count, Export, All Users, Attiva check -->
+					<div style="display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; margin-left: auto;">
+						<?php
 						rgbmind_eph_render_export_menu(
 							'export_accounts',
 							'rgbmind_eph_export_accounts',
 							$has_filters ? __( 'Export Filtered', 'rgbmind-ephemere' ) : __( 'Export Accounts', 'rgbmind-ephemere' ),
-							$export_args
-						);
-					}
-					?>
-					<a href="<?php echo esc_url( admin_url( 'users.php' ) ); ?>" class="button button-secondary">
-						<?php esc_html_e( 'Manage All WordPress Users', 'rgbmind-ephemere' ); ?> &rarr;
-					</a>
-				</div>
-			</div>
-
-			<?php if ( ! empty( $ephemeral_users ) ) : ?>
-				<form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" class="rgbmind-filter-bar" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: #fff; border: 1px solid #dcdcde; border-radius: 4px; padding: 10px 12px; margin-bottom: 12px;">
-					<input type="hidden" name="page" value="rgbmind-ephemere" />
-					<input type="hidden" name="tab" value="jit" />
-					<div style="position: relative; flex: 1 1 240px; max-width: 340px;">
-						<span class="dashicons dashicons-search" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: #8c8f94; font-size: 16px; width: 16px; height: 16px; line-height: 16px; pointer-events: none;"></span>
-						<input type="search" name="s" value="<?php echo esc_attr( $jit_filters['s'] ); ?>" placeholder="<?php esc_attr_e( 'Search username, email or name…', 'rgbmind-ephemere' ); ?>" aria-label="<?php esc_attr_e( 'Search accounts', 'rgbmind-ephemere' ); ?>" style="width: 100%; padding-left: 30px; min-height: 32px; margin: 0;" />
-					</div>
-					<select name="status" onchange="this.form.submit()" aria-label="<?php esc_attr_e( 'Filter by status', 'rgbmind-ephemere' ); ?>" style="min-height: 32px; margin: 0;">
-						<option value=""><?php esc_html_e( 'All statuses', 'rgbmind-ephemere' ); ?></option>
-						<?php foreach ( $status_labels as $st_key => $st_label ) : ?>
-							<option value="<?php echo esc_attr( $st_key ); ?>" <?php selected( $jit_filters['status'], $st_key ); ?>><?php echo esc_html( $st_label . ' (' . $status_counts[ $st_key ] . ')' ); ?></option>
-						<?php endforeach; ?>
-					</select>
-					<select name="role" onchange="this.form.submit()" aria-label="<?php esc_attr_e( 'Filter by role', 'rgbmind-ephemere' ); ?>" style="min-height: 32px; margin: 0;">
-						<option value=""><?php esc_html_e( 'All roles', 'rgbmind-ephemere' ); ?></option>
-						<?php foreach ( $jit_roles as $r_slug => $r_info ) : ?>
-							<option value="<?php echo esc_attr( $r_slug ); ?>" <?php selected( $jit_filters['role'], $r_slug ); ?>><?php echo esc_html( translate_user_role( $r_info['name'] ) ); ?></option>
-						<?php endforeach; ?>
-					</select>
-					<?php if ( $is_pro ) : ?>
-						<select name="ml" onchange="this.form.submit()" aria-label="<?php esc_attr_e( 'Filter by Magic Link', 'rgbmind-ephemere' ); ?>" style="min-height: 32px; margin: 0;">
-							<option value=""><?php esc_html_e( 'All Magic Links', 'rgbmind-ephemere' ); ?></option>
-							<option value="active" <?php selected( $jit_filters['ml'], 'active' ); ?>><?php esc_html_e( 'Magic Link active', 'rgbmind-ephemere' ); ?></option>
-							<option value="expired" <?php selected( $jit_filters['ml'], 'expired' ); ?>><?php esc_html_e( 'Magic Link expired', 'rgbmind-ephemere' ); ?></option>
-							<option value="none" <?php selected( $jit_filters['ml'], 'none' ); ?>><?php esc_html_e( 'Magic Link not generated', 'rgbmind-ephemere' ); ?></option>
-						</select>
-					<?php endif; ?>
-					<button type="submit" class="button" style="min-height: 32px;"><?php esc_html_e( 'Filter', 'rgbmind-ephemere' ); ?></button>
-					<?php if ( $has_filters ) : ?>
-						<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=jit' ) ); ?>" style="color: #b32d2e; text-decoration: none; font-size: 13px;">&times; <?php esc_html_e( 'Reset filters', 'rgbmind-ephemere' ); ?></a>
-					<?php endif; ?>
-					<span style="margin-left: auto; color: #646970; font-size: 13px;">
-						<?php
-						printf(
-							/* translators: 1: visible accounts, 2: total accounts */
-							esc_html__( 'Showing %1$d of %2$d temporary accounts', 'rgbmind-ephemere' ),
-							count( $filtered_users ),
-							count( $ephemeral_users )
+							$export_args,
+							true
 						);
 						?>
-					</span>
-				</form>
+						<button type="button" id="rgbmind-toggle-mode-btn" class="button button-secondary" style="height: 28px; min-height: 28px; line-height: 26px; width: 28px; min-width: 28px; padding: 0; display: inline-flex; align-items: center; justify-content: center;" title="<?php esc_attr_e( 'Switch to Edit Mode', 'rgbmind-ephemere' ); ?>">
+							<span class="dashicons dashicons-edit" style="font-size: 16px; width: 16px; height: 16px; line-height: 16px;"></span>
+						</button>
+						
+					</div>
+				</div>
 			<?php endif; ?>
 
 			<?php if ( empty( $ephemeral_users ) ) : ?>
@@ -1414,8 +1408,8 @@ function rgbmind_eph_render_dashboard() {
 			<?php else : ?>
 				<form method="post" action="" id="rgbmind-bulk-form" style="margin: 0;">
 					<?php wp_nonce_field( 'rgbmind_eph_bulk_action', 'rgbmind_eph_bulk_nonce' ); ?>
-					<div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px;">
-						<select name="rgbmind_bulk_action" id="rgbmind-bulk-action" aria-label="<?php esc_attr_e( 'Bulk actions', 'rgbmind-ephemere' ); ?>" style="margin: 0;">
+					<div id="rgbmind-bulk-panel" style="display: none; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; padding: 6px 10px; background: #f0f6fc; border: 1px solid #c8e1ff; border-radius: 4px;">
+						<select name="rgbmind_bulk_action" id="rgbmind-bulk-action" aria-label="<?php esc_attr_e( 'Bulk actions', 'rgbmind-ephemere' ); ?>" style="margin: 0; height: 28px; min-height: 28px; line-height: 26px; font-size: 12px; padding: 0 24px 0 8px; vertical-align: middle;">
 							<option value=""><?php esc_html_e( 'Bulk actions', 'rgbmind-ephemere' ); ?></option>
 							<option value="change_role"><?php esc_html_e( 'Change role to…', 'rgbmind-ephemere' ); ?></option>
 							<option value="lock"><?php esc_html_e( 'Lock', 'rgbmind-ephemere' ); ?></option>
@@ -1432,269 +1426,287 @@ function rgbmind_eph_render_dashboard() {
 								<option value="delete"><?php esc_html_e( 'Delete permanently', 'rgbmind-ephemere' ); ?></option>
 							<?php endif; ?>
 						</select>
-						<select name="rgbmind_bulk_role" id="rgbmind-bulk-role" aria-label="<?php esc_attr_e( 'New role', 'rgbmind-ephemere' ); ?>" style="display: none; margin: 0;">
+						<select name="rgbmind_bulk_role" id="rgbmind-bulk-role" aria-label="<?php esc_attr_e( 'New role', 'rgbmind-ephemere' ); ?>" style="display: none; margin: 0; height: 28px; min-height: 28px; line-height: 26px; font-size: 12px; padding: 0 24px 0 8px; vertical-align: middle;">
 							<?php foreach ( $jit_roles as $r_slug => $r_info ) : ?>
 								<option value="<?php echo esc_attr( $r_slug ); ?>"><?php echo esc_html( translate_user_role( $r_info['name'] ) ); ?></option>
 							<?php endforeach; ?>
 						</select>
-						<button type="submit" class="button" id="rgbmind-bulk-apply"><?php esc_html_e( 'Apply', 'rgbmind-ephemere' ); ?></button>
-						<span id="rgbmind-bulk-count" style="color: #2271b1; font-size: 12.5px; font-weight: 600; margin-left: 4px;"></span>
+						<button type="submit" class="button button-primary" id="rgbmind-bulk-apply" style="height: 28px; min-height: 28px; line-height: 26px; font-size: 12px; padding: 0 10px; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle;"><?php esc_html_e( 'Apply', 'rgbmind-ephemere' ); ?></button>
+						<span id="rgbmind-bulk-count" style="color: #0969da; font-size: 12px; font-weight: 600; margin-left: 4px;"></span>
 					</div>
-				<table class="wp-list-table widefat fixed striped table-view-list" style="box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-					<thead>
-						<tr>
-							<td class="manage-column column-cb check-column" style="width: 2.2em;">
-								<input type="checkbox" class="rgbmind-cb-all" aria-label="<?php esc_attr_e( 'Select all', 'rgbmind-ephemere' ); ?>" />
-							</td>
-							<th style="width: 17%;"><?php esc_html_e( 'Username / User', 'rgbmind-ephemere' ); ?></th>
-							<th style="width: 18%;"><?php esc_html_e( 'Email', 'rgbmind-ephemere' ); ?></th>
-							<th style="width: 16%;"><?php esc_html_e( 'Expiration Date/Time', 'rgbmind-ephemere' ); ?></th>
-							<th style="width: 19%;"><?php esc_html_e( 'Magic Link', 'rgbmind-ephemere' ); ?></th>
-							<th style="width: 10%;"><?php esc_html_e( 'Login Count', 'rgbmind-ephemere' ); ?></th>
-							<th style="width: 9%;"><?php esc_html_e( 'Status', 'rgbmind-ephemere' ); ?></th>
-							<th style="width: 11%; text-align: right;"><?php esc_html_e( 'Quick Actions', 'rgbmind-ephemere' ); ?></th>
-						</tr>
-					</thead>
-					<tbody>
+				<div id="rgbmind-table-wrapper" style="width: 100%; transition: all 0.2s ease;">
+					<?php
+					$curr_ob = isset( $jit_filters['orderby'] ) ? $jit_filters['orderby'] : 'registered';
+					$curr_or = isset( $jit_filters['order'] ) ? $jit_filters['order'] : 'desc';
+					$base_sort_url = admin_url( 'admin.php?page=rgbmind-ephemere&tab=jit' );
+					if ( ! empty( $jit_filters['s'] ) ) { $base_sort_url = add_query_arg( 's', $jit_filters['s'], $base_sort_url ); }
+					if ( ! empty( $jit_filters['status'] ) ) { $base_sort_url = add_query_arg( 'status', $jit_filters['status'], $base_sort_url ); }
+					if ( ! empty( $jit_filters['role'] ) ) { $base_sort_url = add_query_arg( 'role', $jit_filters['role'], $base_sort_url ); }
+					if ( ! empty( $jit_filters['ml'] ) ) { $base_sort_url = add_query_arg( 'ml', $jit_filters['ml'], $base_sort_url ); }
+
+					$get_th_sort = function( $col_key, $label, $width = '', $extra_class = '' ) use ( $curr_ob, $curr_or, $base_sort_url ) {
+						$is_curr   = ( $curr_ob === $col_key );
+						$next_or   = ( $is_curr && 'asc' === $curr_or ) ? 'desc' : 'asc';
+						$sort_url  = add_query_arg( array( 'orderby' => $col_key, 'order' => $next_or ), $base_sort_url );
+						$th_class  = 'manage-column sortable ' . ( $is_curr ? 'sorted ' . $curr_or : 'desc' ) . ( $extra_class ? ' ' . $extra_class : '' );
+						$style_str = $width ? 'style="width: ' . esc_attr( $width ) . ';"' : '';
+						?>
+						<th scope="col" class="<?php echo esc_attr( $th_class ); ?>" <?php echo $style_str; ?>>
+							<a href="<?php echo esc_url( $sort_url ); ?>">
+								<span><?php echo esc_html( $label ); ?></span>
+								<span class="sorting-indicators">
+									<span class="sorting-indicator asc" aria-hidden="true"></span>
+									<span class="sorting-indicator desc" aria-hidden="true"></span>
+								</span>
+							</a>
+						</th>
 						<?php
-						$now = time();
-						foreach ( $filtered_users as $u ) :
-							$u_id        = $u->ID;
-							$u_locked    = (int) get_user_meta( $u_id, '_rgbmind_is_locked', true );
-							$u_expire    = (int) get_user_meta( $u_id, '_rgbmind_expire_at', true );
-							$u_max       = (int) get_user_meta( $u_id, '_rgbmind_max_logins', true );
-							$u_count     = (int) get_user_meta( $u_id, '_rgbmind_login_count', true );
-							$u_last      = (int) get_user_meta( $u_id, '_rgbmind_last_login_time', true );
+					};
 
-							// Magic Link state
-							$u_token_exp = (int) get_user_meta( $u_id, '_rgbmind_magic_token_exp', true );
-							if ( 0 === $u_token_exp ) {
-								$u_token_exp = (int) get_user_meta( $u_id, '_rgbmind_magic_token_expires', true );
+					$render_user_row = function( $u ) use ( $jit_roles, $is_pro ) {
+						$u_id        = $u->ID;
+						$u_locked    = (int) get_user_meta( $u_id, '_rgbmind_is_locked', true );
+						$u_expire    = (int) get_user_meta( $u_id, '_rgbmind_expire_at', true );
+						$u_max       = (int) get_user_meta( $u_id, '_rgbmind_max_logins', true );
+						$u_count     = (int) get_user_meta( $u_id, '_rgbmind_login_count', true );
+						$u_last      = (int) get_user_meta( $u_id, '_rgbmind_last_login_time', true );
+						$now         = time();
+
+						// Magic Link state
+						$u_token_exp = (int) get_user_meta( $u_id, '_rgbmind_magic_token_exp', true );
+						if ( 0 === $u_token_exp ) {
+							$u_token_exp = (int) get_user_meta( $u_id, '_rgbmind_magic_token_expires', true );
+						}
+						$has_active_ml = ( $u_token_exp > $now );
+						$magic_url     = '';
+
+						if ( $has_active_ml ) {
+							$plain_token = (string) get_user_meta( $u_id, '_rgbmind_magic_plain_token', true );
+							if ( empty( $plain_token ) && function_exists( 'rgbmind_eph_pro_generate_magic_token' ) ) {
+								$plain_token = rgbmind_eph_pro_generate_magic_token( $u_id, max( 60, $u_token_exp - $now ) );
 							}
-							$has_active_ml = ( $u_token_exp > $now );
-							$magic_url     = '';
+							if ( ! empty( $plain_token ) ) {
+								$magic_url = add_query_arg(
+									array(
+										'rgbmind_magic_auth' => $plain_token,
+										'rgbmind_uid'        => $u_id,
+									),
+									wp_login_url()
+								);
+							}
+						}
 
-							if ( $has_active_ml ) {
-								$plain_token = (string) get_user_meta( $u_id, '_rgbmind_magic_plain_token', true );
-								if ( empty( $plain_token ) && function_exists( 'rgbmind_eph_pro_generate_magic_token' ) ) {
-									$plain_token = rgbmind_eph_pro_generate_magic_token( $u_id, max( 60, $u_token_exp - $now ) );
+						$gen_magic_nonce = wp_create_nonce( 'rgbmind_eph_generate_magic_' . $u_id );
+						$gen_magic_url   = add_query_arg(
+							array(
+								'action'   => 'generate_magic',
+								'user_id'  => $u_id,
+								'_wpnonce' => $gen_magic_nonce,
+							),
+							admin_url( 'admin.php?page=rgbmind-ephemere&tab=jit' )
+						);
+
+						$toggle_nonce = wp_create_nonce( 'rgbmind_eph_toggle_lock_' . $u_id );
+						$toggle_url   = add_query_arg(
+							array(
+								'action'   => 'toggle_lock',
+								'user_id'  => $u_id,
+								'_wpnonce' => $toggle_nonce,
+							),
+							admin_url( 'admin.php?page=rgbmind-ephemere&tab=accounts' )
+						);
+						?>
+						<tr>
+							<th scope="row" class="check-column rgbmind-col-check" style="width: 32px; text-align: center; vertical-align: middle; padding: 8px 0; display: none;">
+								<input type="checkbox" name="rgbmind_ids[]" style="margin: 0;" value="<?php echo esc_attr( $u_id ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: username */ __( 'Select %s', 'rgbmind-ephemere' ), $u->user_login ) ); ?>" />
+							</th>
+							<td class="rgbmind-col-status" style="text-align: center; vertical-align: middle; padding: 8px 4px;">
+								<?php
+								if ( 1 === $u_locked ) {
+									echo '<span title="' . esc_attr__( 'Account is locked', 'rgbmind-ephemere' ) . '" style="font-size: 22px; cursor: help; display: inline-block; line-height: 1; vertical-align: middle;">&#x1f512;</span>';
+								} elseif ( $u_expire > 0 && $now >= $u_expire ) {
+									echo '<span title="' . esc_attr__( 'Account is expired', 'rgbmind-ephemere' ) . '" style="font-size: 22px; cursor: help; display: inline-block; line-height: 1; vertical-align: middle;">&#x23f0;</span>';
+								} else {
+									echo '<span title="' . esc_attr__( 'Account is active', 'rgbmind-ephemere' ) . '" style="display: inline-block; width: 14px; height: 14px; background-color: #008a20; border-radius: 50%; box-shadow: 0 0 0 2px #c3e6cb; vertical-align: middle; cursor: help;"></span>';
 								}
-								if ( ! empty( $plain_token ) ) {
-									$magic_url = add_query_arg(
-										array(
-											'rgbmind_magic_auth' => $plain_token,
-											'rgbmind_uid'        => $u_id,
-										),
-										wp_login_url()
-									);
-								}
-							}
-
-							$gen_magic_nonce = wp_create_nonce( 'rgbmind_eph_generate_magic_' . $u_id );
-							$gen_magic_url   = add_query_arg(
-								array(
-									'action'   => 'generate_magic',
-									'user_id'  => $u_id,
-									'_wpnonce' => $gen_magic_nonce,
-								),
-								admin_url( 'admin.php?page=rgbmind-ephemere&tab=jit' )
-							);
-
-							// Status resolution
-							$status_label = __( 'Active', 'rgbmind-ephemere' );
-							$status_style = 'color: #007017; font-weight: 600;';
-							$status_icon  = '✅';
-
-							if ( 1 === $u_locked ) {
-								$status_label = __( 'Locked', 'rgbmind-ephemere' );
-								$status_style = 'color: #b32d2e; font-weight: 600;';
-								$status_icon  = '🔒';
-							} elseif ( $u_expire > 0 && $now >= $u_expire ) {
-								$status_label = __( 'Expired', 'rgbmind-ephemere' );
-								$status_style = 'color: #996800; font-weight: 600;';
-								$status_icon  = '⏰';
-							} elseif ( $u_max > 0 && $u_count >= $u_max ) {
-								$status_label = __( 'Limit reached', 'rgbmind-ephemere' );
-								$status_style = 'color: #996800; font-weight: 600;';
-								$status_icon  = '⚠️';
-							}
-
-							// Toggle lock link with nonce
-							$toggle_nonce = wp_create_nonce( 'rgbmind_eph_toggle_lock_' . $u_id );
-							$toggle_url   = add_query_arg(
-								array(
-									'action'   => 'toggle_lock',
-									'user_id'  => $u_id,
-									'_wpnonce' => $toggle_nonce,
-								),
-								admin_url( 'admin.php?page=rgbmind-ephemere&tab=accounts' )
-							);
-							?>
-							<tr>
-								<th scope="row" class="check-column">
-									<input type="checkbox" name="rgbmind_ids[]" value="<?php echo esc_attr( $u_id ); ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: username */ __( 'Select %s', 'rgbmind-ephemere' ), $u->user_login ) ); ?>" />
-								</th>
-								<td>
+								?>
+							</td>
+							<td class="rgbmind-col-login" style="vertical-align: middle;">
+								<strong><?php echo esc_html( $u_count ); ?></strong>
+								<?php esc_html_e( 'of', 'rgbmind-ephemere' ); ?>
+								<span><?php echo ( $u_max > 0 ) ? esc_html( $u_max ) : '&infin;'; ?></span>
+								<?php if ( $u_last > 0 ) : ?>
+									<br />
+									<small style="color: #646970;">
+										<?php
+										/* translators: %s: relative time since last login (e.g. 5 minutes) */
+										echo esc_html( sprintf( __( 'Last: %s ago', 'rgbmind-ephemere' ), human_time_diff( $u_last, $now ) ) );
+										?>
+									</small>
+								<?php endif; ?>
+							</td>
+							<td class="rgbmind-col-account">
+								<div style="display: flex; align-items: center; gap: 5px;">
+									<?php
+									$u_reg_time  = ! empty( $u->user_registered ) ? strtotime( $u->user_registered ) : 0;
+									$u_reg_title = $u_reg_time > 0 ? wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $u_reg_time ) : '';
+									$u_reg_human = $u_reg_time > 0 ? human_time_diff( $u_reg_time, time() ) : '';
+									$u_role_slug = ! empty( $u->roles ) ? reset( $u->roles ) : '';
+									$u_role_lbl  = ( $u_role_slug && isset( $jit_roles[ $u_role_slug ]['name'] ) ) ? translate_user_role( $jit_roles[ $u_role_slug ]['name'] ) : ( $u_role_slug ? ucfirst( $u_role_slug ) : '' );
+									?>
+									<button type="button" class="rgbmind-user-info-trigger"
+										data-login="<?php echo esc_attr( $u->user_login ); ?>"
+										data-displayname="<?php echo esc_attr( ! empty( $u->display_name ) ? $u->display_name : $u->user_login ); ?>"
+										data-role="<?php echo esc_attr( $u_role_lbl ); ?>"
+										data-created="<?php echo esc_attr( $u_reg_title ); ?>"
+										data-created-ago="<?php echo esc_attr( $u_reg_human ); ?>"
+										aria-label="<?php echo esc_attr( sprintf( /* translators: %s: username */ __( 'View details for %s', 'rgbmind-ephemere' ), $u->user_login ) ); ?>"
+										title="<?php esc_attr_e( 'View account details', 'rgbmind-ephemere' ); ?>">
+										<span class="dashicons dashicons-arrow-right-alt2"></span>
+									</button>
 									<strong>
 										<a href="<?php echo esc_url( admin_url( 'user-edit.php?user_id=' . $u_id ) ); ?>">
 											<?php echo esc_html( $u->user_login ); ?>
 										</a>
 									</strong>
-									<br />
-									<small style="color: #646970;"><?php echo esc_html( $u->display_name ); ?></small>
-									<?php
-									$u_role_slug = ! empty( $u->roles ) ? reset( $u->roles ) : '';
-									if ( $u_role_slug ) :
-										$u_role_label = isset( $jit_roles[ $u_role_slug ]['name'] ) ? translate_user_role( $jit_roles[ $u_role_slug ]['name'] ) : ucfirst( $u_role_slug );
-										?>
-										<br /><span style="display: inline-block; margin-top: 3px; background: #f0f0f1; color: #50575e; padding: 1px 6px; border-radius: 3px; font-size: 11px; font-weight: 600;"><?php echo esc_html( $u_role_label ); ?></span>
-									<?php endif; ?>
-									<?php
-									$u_reg_time = ! empty( $u->user_registered ) ? strtotime( $u->user_registered ) : 0;
-									if ( $u_reg_time > 0 ) :
-										$u_reg_title = wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $u_reg_time );
-									?>
-										<br /><span style="display: inline-flex; align-items: center; gap: 3px; color: #646970; font-size: 11px; margin-top: 4px;" title="<?php printf( esc_attr__( 'Created on: %s', 'rgbmind-ephemere' ), esc_attr( $u_reg_title ) ); ?>">
-											<span class="dashicons dashicons-calendar-alt" style="font-size: 13px; width: 13px; height: 13px; line-height: 13px; color: #8c8f94;"></span>
-											<span><?php printf( esc_html__( 'Created: %s', 'rgbmind-ephemere' ), esc_html( wp_date( 'd/m/Y H:i', $u_reg_time ) ) ); ?></span>
-										</span>
-									<?php endif; ?>
-								</td>
-								<td>
-									<a href="mailto:<?php echo esc_attr( $u->user_email ); ?>" style="word-break: break-all;">
-										<?php echo esc_html( $u->user_email ); ?>
-									</a>
-								</td>
-								<td>
-									<?php if ( $u_expire > 0 ) : ?>
-										<span><?php echo esc_html( wp_date( 'Y-m-d H:i', $u_expire ) ); ?></span>
-										<br />
-										<small style="color: <?php echo ( $now >= $u_expire ) ? '#d63638' : '#646970'; ?>;">
-											<?php
-											if ( $now >= $u_expire ) {
-												/* translators: %s: relative time elapsed since expiration (e.g. 2 hours) */
-												echo esc_html( sprintf( __( 'Expired %s ago', 'rgbmind-ephemere' ), human_time_diff( $u_expire, $now ) ) );
-											} else {
-												/* translators: %s: relative time until expiration (e.g. 3 days) */
-												echo esc_html( sprintf( __( 'in %s', 'rgbmind-ephemere' ), human_time_diff( $now, $u_expire ) ) );
-											}
-											?>
-										</small>
-									<?php else : ?>
-										<span style="color: #646970;"><?php esc_html_e( 'No time limit', 'rgbmind-ephemere' ); ?></span>
-									<?php endif; ?>
-								</td>
-								<td>
-									<?php if ( ! $is_pro ) : ?>
-										<span style="color: #a7aaad; font-size: 12px;" title="<?php esc_attr_e( 'Available in PRO version', 'rgbmind-ephemere' ); ?>">
-											<?php esc_html_e( 'PRO feature', 'rgbmind-ephemere' ); ?>
-										</span>
-									<?php elseif ( $has_active_ml && ! empty( $magic_url ) ) : ?>
-										<span style="color: #007017; font-weight: 600; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
-											<span class="dashicons dashicons-yes-alt" style="color: #007017; font-size: 15px; width: 15px; height: 15px; line-height: 15px;"></span>
-											<?php esc_html_e( 'Active', 'rgbmind-ephemere' ); ?>
-										</span>
-										<br />
-										<small style="color: #646970;">
-											<?php
-											printf(
-												/* translators: 1: formatted date/time, 2: relative time */
-												esc_html__( '%1$s (in %2$s)', 'rgbmind-ephemere' ),
-												esc_html( wp_date( 'd/m H:i', $u_token_exp ) ),
-												esc_html( human_time_diff( $now, $u_token_exp ) )
-											);
-											?>
-										</small>
-										<div style="margin-top: 5px; display: flex; align-items: center; gap: 4px;">
-											<button type="button" class="button button-small rgbmind-copy-ml-btn" data-url="<?php echo esc_attr( $magic_url ); ?>" style="display: inline-flex; align-items: center; gap: 3px;" title="<?php esc_attr_e( 'Copy Magic Link to clipboard', 'rgbmind-ephemere' ); ?>">
-												<span class="dashicons dashicons-admin-links" style="font-size: 14px; width: 14px; height: 14px; line-height: 14px;"></span>
+								</div>
+								<?php if ( $u_expire > 0 ) : ?>
+									<div style="margin-top: 4px; font-size: 11.5px; color: #50575e; display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
+										<span style="font-weight: 600;"><?php echo esc_html( wp_date( 'd/m/Y H:i', $u_expire ) ); ?></span>
+										<?php if ( $now < $u_expire ) : ?>
+											<span class="rgbmind-live-countdown" data-timestamp="<?php echo esc_attr( $u_expire ); ?>" style="font-family: monospace; font-size: 11px; font-weight: 700; color: #2271b1; background: #f0f6fc; border: 1px solid #c8d8ea; padding: 1px 5px; border-radius: 3px;" title="<?php echo esc_attr( wp_date( 'd/m/Y H:i', $u_expire ) ); ?>">--:--</span>
+										<?php else : ?>
+											<span style="color: #d63638; font-size: 11px; font-weight: 600;"><?php esc_html_e( 'Expired', 'rgbmind-ephemere' ); ?></span>
+										<?php endif; ?>
+									</div>
+								<?php endif; ?>
+							</td>
+							<td class="rgbmind-col-role">
+								<?php if ( $u_role_lbl ) : ?>
+									<span style="display: inline-block; background: #f0f0f1; color: #50575e; padding: 2px 7px; border-radius: 3px; font-size: 11px; font-weight: 600;">
+										<?php echo esc_html( $u_role_lbl ); ?>
+									</span>
+								<?php else : ?>
+									<span style="color: #8c8f94; font-size: 11px;">-</span>
+								<?php endif; ?>
+							</td>
+							<td class="rgbmind-col-magic" style="vertical-align: middle;">
+								<?php if ( ! $is_pro ) : ?>
+									<span class="rgbmind-badge rgbmind-status-neutral" style="font-size: 11px; padding: 2px 7px; border-radius: 3px; font-weight: 600;" title="<?php esc_attr_e( 'Available in PRO version', 'rgbmind-ephemere' ); ?>">
+										<?php esc_html_e( 'PRO feature', 'rgbmind-ephemere' ); ?>
+									</span>
+								<?php elseif ( $has_active_ml && ! empty( $magic_url ) ) : ?>
+									<div style="display: flex; flex-direction: column; gap: 2px; align-items: flex-start;">
+										<small style="color: #646970; font-size: 11px;"><?php echo esc_html( wp_date( 'd/m H:i', $u_token_exp ) ); ?></small>
+										<span class="rgbmind-live-countdown" data-timestamp="<?php echo esc_attr( $u_token_exp ); ?>" style="font-family: monospace; font-size: 11px; font-weight: 700; color: #007017; background: #edfaef; border: 1px solid #b7e1cd; padding: 1px 5px; border-radius: 3px;" title="<?php echo esc_attr( wp_date( 'd/m/Y H:i', $u_token_exp ) ); ?>">--:--</span>
+									</div>
+								<?php elseif ( $u_token_exp > 0 && $u_token_exp <= $now ) : ?>
+									<div style="display: flex; flex-direction: column; gap: 2px; align-items: flex-start;">
+										<small style="color: #8c8f94; font-size: 11px;"><?php echo esc_html( wp_date( 'd/m H:i', $u_token_exp ) ); ?></small>
+										<span style="color: #b32d2e; font-size: 11px; font-weight: 600;"><?php esc_html_e( 'Expired', 'rgbmind-ephemere' ); ?></span>
+									</div>
+								<?php else : ?>
+									<small style="color: #8c8f94; font-size: 11px;"><?php esc_html_e( 'Not generated', 'rgbmind-ephemere' ); ?></small>
+								<?php endif; ?>
+							</td>
+							<td class="rgbmind-col-actions rgbmind-col-magic-actions" style="vertical-align: middle; text-align: left; display: none;">
+								<?php if ( $is_pro ) : ?>
+									<?php if ( $has_active_ml && ! empty( $magic_url ) ) : ?>
+										<div style="display: inline-flex; align-items: center; gap: 4px;">
+											<button type="button" class="button button-small rgbmind-copy-ml-btn" data-url="<?php echo esc_attr( $magic_url ); ?>" style="display: inline-flex; align-items: center; gap: 3px; font-size: 11px; height: 24px; line-height: 22px; padding: 0 7px;" title="<?php esc_attr_e( 'Copy Magic Link to clipboard', 'rgbmind-ephemere' ); ?>">
+												<span class="dashicons dashicons-admin-links" style="font-size: 13px; width: 13px; height: 13px; line-height: 13px;"></span>
 												<span><?php esc_html_e( 'Copy Link', 'rgbmind-ephemere' ); ?></span>
 											</button>
-											<a href="<?php echo esc_url( $gen_magic_url ); ?>" class="button button-small" style="display: inline-flex; align-items: center; justify-content: center; padding: 0 6px; min-width: 28px;" title="<?php esc_attr_e( 'Regenerate Magic Link', 'rgbmind-ephemere' ); ?>">
-												<span class="dashicons dashicons-update" style="font-size: 15px; width: 15px; height: 15px; line-height: 15px;"></span>
-											</a>
-										</div>
-									<?php elseif ( $u_token_exp > 0 && $u_token_exp <= $now ) : ?>
-										<span style="color: #b32d2e; font-weight: 500; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
-											<span class="dashicons dashicons-clock" style="color: #b32d2e; font-size: 15px; width: 15px; height: 15px; line-height: 15px;"></span>
-											<?php esc_html_e( 'Expired', 'rgbmind-ephemere' ); ?>
-										</span>
-										<br />
-										<small style="color: #8c8f94;">
-											<?php
-											printf(
-												/* translators: %s: relative time elapsed since expiration */
-												esc_html__( '%s ago', 'rgbmind-ephemere' ),
-												esc_html( human_time_diff( $u_token_exp, $now ) )
-											);
-											?>
-										</small>
-										<div style="margin-top: 4px;">
-											<a href="<?php echo esc_url( $gen_magic_url ); ?>" class="button button-small" style="display: inline-flex; align-items: center; gap: 3px;" title="<?php esc_attr_e( 'Generate 1-click Magic Link', 'rgbmind-ephemere' ); ?>">
+											<a href="<?php echo esc_url( $gen_magic_url ); ?>" class="button button-small" style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; min-height: 24px; padding: 0; color: #50575e;" title="<?php esc_attr_e( 'Regenerate Magic Link', 'rgbmind-ephemere' ); ?>">
 												<span class="dashicons dashicons-update" style="font-size: 13px; width: 13px; height: 13px; line-height: 13px;"></span>
-												<?php esc_html_e( 'Generate', 'rgbmind-ephemere' ); ?>
 											</a>
 										</div>
 									<?php else : ?>
-										<span style="color: #8c8f94; font-size: 12px;">
-											<?php esc_html_e( 'Not active', 'rgbmind-ephemere' ); ?>
-										</span>
-										<div style="margin-top: 4px;">
-											<a href="<?php echo esc_url( $gen_magic_url ); ?>" class="button button-small" style="display: inline-flex; align-items: center; gap: 3px;" title="<?php esc_attr_e( 'Generate 1-click Magic Link', 'rgbmind-ephemere' ); ?>">
-												<span class="dashicons dashicons-update" style="font-size: 13px; width: 13px; height: 13px; line-height: 13px;"></span>
-												<?php esc_html_e( 'Generate', 'rgbmind-ephemere' ); ?>
-											</a>
-										</div>
-									<?php endif; ?>
-								</td>
-								<td>
-									<strong><?php echo esc_html( $u_count ); ?></strong>
-									/
-									<span><?php echo ( $u_max > 0 ) ? esc_html( $u_max ) : esc_html__( 'Unlimited', 'rgbmind-ephemere' ); ?></span>
-									<?php if ( $u_last > 0 ) : ?>
-										<br />
-										<small style="color: #646970;">
-											<?php
-											/* translators: %s: relative time since last login (e.g. 5 minutes) */
-											echo esc_html( sprintf( __( 'Last: %s ago', 'rgbmind-ephemere' ), human_time_diff( $u_last, $now ) ) );
-											?>
-										</small>
-									<?php endif; ?>
-								</td>
-								<td>
-									<span style="<?php echo esc_attr( $status_style ); ?>">
-										<?php echo esc_html( $status_icon ) . ' ' . esc_html( $status_label ); ?>
-									</span>
-								</td>
-								<td style="text-align: right;">
-									<div style="display: flex; gap: 8px; justify-content: flex-end; align-items: center;">
-										<?php if ( 1 === $u_locked ) : ?>
-											<a href="<?php echo esc_url( $toggle_url ); ?>" class="button button-small" style="color: #007017; border-color: #007017;">
-												<?php esc_html_e( 'Unlock', 'rgbmind-ephemere' ); ?>
-											</a>
-										<?php else : ?>
-											<a href="<?php echo esc_url( $toggle_url ); ?>" class="button button-small" style="color: #b32d2e; border-color: #b32d2e;">
-												<?php esc_html_e( 'Lock', 'rgbmind-ephemere' ); ?>
-											</a>
-										<?php endif; ?>
-
-										<a href="<?php echo esc_url( admin_url( 'user-edit.php?user_id=' . $u_id ) ); ?>" class="button button-small">
-											<?php esc_html_e( 'Edit', 'rgbmind-ephemere' ); ?>
+										<a href="<?php echo esc_url( $gen_magic_url ); ?>" class="button button-small" style="display: inline-flex; align-items: center; gap: 3px; font-size: 11px; height: 24px; line-height: 22px; padding: 0 7px;" title="<?php esc_attr_e( 'Generate 1-click Magic Link', 'rgbmind-ephemere' ); ?>">
+											<span class="dashicons dashicons-update" style="font-size: 13px; width: 13px; height: 13px; line-height: 13px;"></span>
+											<?php esc_html_e( 'Generate', 'rgbmind-ephemere' ); ?>
 										</a>
-									</div>
-								</td>
-							</tr>
-						<?php endforeach; ?>
-						<?php if ( empty( $filtered_users ) ) : ?>
+									<?php endif; ?>
+								<?php else : ?>
+									<span style="color: #8c8f94; font-size: 11px;">-</span>
+								<?php endif; ?>
+							</td>
+							<td class="rgbmind-col-email">
+								<a href="mailto:<?php echo esc_attr( $u->user_email ); ?>" style="word-break: break-all;">
+									<?php echo esc_html( $u->user_email ); ?>
+								</a>
+							</td>
+
+							<td class="rgbmind-col-actions" style="text-align: right; display: none;">
+								<div style="display: flex; gap: 8px; justify-content: flex-end; align-items: center;">
+									<?php if ( 1 === $u_locked ) : ?>
+										<a href="<?php echo esc_url( $toggle_url ); ?>" class="button button-small" style="color: #007017; border-color: #007017;">
+											<?php esc_html_e( 'Unlock', 'rgbmind-ephemere' ); ?>
+										</a>
+									<?php else : ?>
+										<a href="<?php echo esc_url( $toggle_url ); ?>" class="button button-small" style="color: #b32d2e; border-color: #b32d2e;">
+											<?php esc_html_e( 'Lock', 'rgbmind-ephemere' ); ?>
+										</a>
+									<?php endif; ?>
+
+									<a href="<?php echo esc_url( admin_url( 'user-edit.php?user_id=' . $u_id ) ); ?>" class="button button-small">
+										<?php esc_html_e( 'Edit', 'rgbmind-ephemere' ); ?>
+									</a>
+								</div>
+							</td>
+						</tr>
+						<?php
+					};
+					?>
+
+					<table id="rgbmind-accounts-table" class="wp-list-table widefat fixed striped table-view-list" style="box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 0;">
+						<thead>
 							<tr>
-								<td colspan="8" style="text-align: center; padding: 24px; color: #646970;">
-									<?php esc_html_e( 'No accounts match the current search or filters.', 'rgbmind-ephemere' ); ?>
-									<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=jit' ) ); ?>"><?php esc_html_e( 'Reset filters', 'rgbmind-ephemere' ); ?></a>
+								<td class="manage-column column-cb check-column rgbmind-col-check" style="width: 32px; text-align: center; vertical-align: middle; padding: 8px 0; display: none;">
+									<input type="checkbox" class="rgbmind-cb-all" style="margin: 0;" aria-label="<?php esc_attr_e( 'Select all', 'rgbmind-ephemere' ); ?>" />
 								</td>
+								<th scope="col" class="rgbmind-col-status" style="width: 44px; padding-left: 0; padding-right: 0; text-align: center;" title="<?php esc_attr_e( 'Account Status', 'rgbmind-ephemere' ); ?>">
+									<span class="dashicons dashicons-shield" style="font-size: 16px; width: 16px; height: 16px; line-height: 16px; color: #8c8f94;"></span>
+								</th>
+								<?php $get_th_sort( 'login_count', __( 'Login', 'rgbmind-ephemere' ), '90px' ); ?>
+								<?php $get_th_sort( 'user_login', __( 'Username / Account', 'rgbmind-ephemere' ), '22%' ); ?>
+								<?php $get_th_sort( 'role', __( 'Role', 'rgbmind-ephemere' ), '12%' ); ?>
+								<?php $get_th_sort( 'ml', __( 'Magic Link', 'rgbmind-ephemere' ), '18%' ); ?>
+								<th class="rgbmind-col-actions rgbmind-col-magic-actions" style="width: 14%; text-align: left; display: none;"><?php esc_html_e( 'Magic Actions', 'rgbmind-ephemere' ); ?></th>
+								<?php $get_th_sort( 'user_email', __( 'Email', 'rgbmind-ephemere' ), '24%' ); ?>
+								<th class="rgbmind-col-actions" style="width: 120px; text-align: right; display: none;"><?php esc_html_e( 'Quick Actions', 'rgbmind-ephemere' ); ?></th>
 							</tr>
-						<?php endif; ?>
-					</tbody>
-				</table>
+						</thead>
+						<tbody>
+							<?php
+							foreach ( $filtered_users as $u ) {
+								$render_user_row( $u );
+							}
+							?>
+							<?php if ( empty( $filtered_users ) ) : ?>
+								<tr>
+									<td colspan="9" style="text-align: center; padding: 24px; color: #646970;">
+										<?php esc_html_e( 'No accounts match the current search or filters.', 'rgbmind-ephemere' ); ?>
+										<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=jit' ) ); ?>"><?php esc_html_e( 'Reset filters', 'rgbmind-ephemere' ); ?></a>
+									</td>
+								</tr>
+							<?php endif; ?>
+						</tbody>
+					</table>
+
+					<!-- Table Footer Summary -->
+					<div class="rgbmind-table-footer" style="display: flex; align-items: center; justify-content: flex-end; padding: 8px 4px; color: #646970; font-size: 12px; margin-top: 4px;">
+						<span>
+							<?php
+							printf(
+								esc_html__( 'Showing %1$d of %2$d accounts', 'rgbmind-ephemere' ),
+								count( $filtered_users ),
+								count( $ephemeral_users )
+							);
+							?>
+						</span>
+					</div>
+				</div>
 				</form>
 				<script>
 				( function () {
@@ -1704,6 +1716,59 @@ function rgbmind_eph_render_dashboard() {
 					var roleSel = document.getElementById( 'rgbmind-bulk-role' );
 					var counter = document.getElementById( 'rgbmind-bulk-count' );
 					var masters = form.querySelectorAll( '.rgbmind-cb-all' );
+
+					var toggleBtn  = document.getElementById( 'rgbmind-toggle-mode-btn' );
+					var bulkPanel  = document.getElementById( 'rgbmind-bulk-panel' );
+
+					function setTableMode( mode ) {
+						var icon = toggleBtn ? toggleBtn.querySelector( '.dashicons' ) : null;
+						if ( mode === 'edit' ) {
+							if ( bulkPanel ) { bulkPanel.style.display = 'flex'; }
+							document.querySelectorAll( '.rgbmind-col-check' ).forEach( function( col ) { col.style.display = ''; } );
+							document.querySelectorAll( '.rgbmind-col-actions' ).forEach( function( col ) { col.style.display = ''; } );
+							if ( toggleBtn ) {
+								toggleBtn.title = '<?php echo esc_js( __( 'Switch to View Mode', 'rgbmind-ephemere' ) ); ?>';
+								toggleBtn.classList.add( 'button-primary' );
+								toggleBtn.classList.remove( 'button-secondary' );
+								if ( icon ) {
+									icon.className = 'dashicons dashicons-visibility';
+								}
+							}
+							try { localStorage.setItem( 'rgbmind_table_mode', 'edit' ); } catch(e) {}
+						} else {
+							if ( bulkPanel ) { bulkPanel.style.display = 'none'; }
+							document.querySelectorAll( '.rgbmind-col-check' ).forEach( function( col ) { col.style.display = 'none'; } );
+							document.querySelectorAll( '.rgbmind-col-actions' ).forEach( function( col ) { col.style.display = 'none'; } );
+							if ( toggleBtn ) {
+								toggleBtn.title = '<?php echo esc_js( __( 'Switch to Edit Mode', 'rgbmind-ephemere' ) ); ?>';
+								toggleBtn.classList.add( 'button-secondary' );
+								toggleBtn.classList.remove( 'button-primary' );
+								if ( icon ) {
+									icon.className = 'dashicons dashicons-edit';
+								}
+							}
+							// uncheck on switching back to info mode
+							boxes().forEach( function( b ) { b.checked = false; } );
+							masters.forEach( function( m ) { m.checked = false; } );
+							refresh();
+							try { localStorage.setItem( 'rgbmind_table_mode', 'info' ); } catch(e) {}
+						}
+					}
+
+					if ( toggleBtn ) {
+						// Restore saved preference if any
+						try {
+							var savedMode = localStorage.getItem( 'rgbmind_table_mode' );
+							if ( savedMode === 'edit' ) {
+								setTableMode( 'edit' );
+							}
+						} catch(e) {}
+
+						toggleBtn.addEventListener( 'click', function() {
+							var isEdit = ( bulkPanel && bulkPanel.style.display === 'flex' );
+							setTableMode( isEdit ? 'info' : 'edit' );
+						} );
+					}
 					var i18n    = {
 						selected: '<?php echo esc_js( __( 'selected', 'rgbmind-ephemere' ) ); ?>',
 						noAction: '<?php echo esc_js( __( 'Choose a bulk action first.', 'rgbmind-ephemere' ) ); ?>',
@@ -1741,54 +1806,84 @@ function rgbmind_eph_render_dashboard() {
 					} );
 				} )();
 				</script>
+
+				<!-- User Details Modal Dialog -->
+				<div id="rgbmind-user-details-modal" style="display: none; position: fixed; z-index: 100000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.55); align-items: center; justify-content: center; backdrop-filter: blur(2px);">
+					<div style="background: #fff; width: 100%; max-width: 440px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); border: 1px solid #c3c4c7; overflow: hidden; animation: rgbmindFadeIn 0.2s ease-out;">
+						<div style="padding: 14px 18px; border-bottom: 1px solid #dcdcde; background: #f6f7f7; display: flex; align-items: center; justify-content: space-between;">
+							<h3 style="margin: 0; font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 6px; color: #1d2327;">
+								<span class="dashicons dashicons-admin-users" style="color: #2271b1;"></span>
+								<?php esc_html_e( 'Account Details', 'rgbmind-ephemere' ); ?>
+							</h3>
+							<button type="button" id="rgbmind-modal-close" style="background: none; border: none; font-size: 20px; line-height: 1; color: #646970; cursor: pointer; padding: 2px 6px; border-radius: 4px;" aria-label="<?php esc_attr_e( 'Close', 'rgbmind-ephemere' ); ?>">&times;</button>
+						</div>
+						<div style="padding: 18px 20px;">
+							<table class="form-table" style="margin: 0; width: 100%;">
+								<tr>
+									<th scope="row" style="width: 140px; padding: 8px 0; color: #50575e; font-size: 13px; font-weight: 600;"><?php esc_html_e( 'Username (Login):', 'rgbmind-ephemere' ); ?></th>
+									<td style="padding: 8px 0; font-size: 13px; font-weight: 700; color: #1d2327;" id="rgbmind-modal-login"></td>
+								</tr>
+								<tr>
+									<th scope="row" style="width: 140px; padding: 8px 0; color: #50575e; font-size: 13px; font-weight: 600;"><?php esc_html_e( 'Display Name:', 'rgbmind-ephemere' ); ?></th>
+									<td style="padding: 8px 0; font-size: 13px; color: #1d2327;" id="rgbmind-modal-displayname"></td>
+								</tr>
+								<tr>
+									<th scope="row" style="width: 140px; padding: 8px 0; color: #50575e; font-size: 13px; font-weight: 600;"><?php esc_html_e( 'Role:', 'rgbmind-ephemere' ); ?></th>
+									<td style="padding: 8px 0; font-size: 13px;" id="rgbmind-modal-role"></td>
+								</tr>
+								<tr>
+									<th scope="row" style="width: 140px; padding: 8px 0; color: #50575e; font-size: 13px; font-weight: 600;"><?php esc_html_e( 'Account Created:', 'rgbmind-ephemere' ); ?></th>
+									<td style="padding: 8px 0; font-size: 13px; color: #1d2327;" id="rgbmind-modal-created"></td>
+								</tr>
+							</table>
+						</div>
+						<div style="padding: 12px 18px; border-top: 1px solid #dcdcde; background: #f6f7f7; text-align: right;">
+							<button type="button" class="button button-primary" id="rgbmind-modal-ok-btn"><?php esc_html_e( 'Close', 'rgbmind-ephemere' ); ?></button>
+						</div>
+					</div>
+				</div>
+
 				<script>
-				document.addEventListener('DOMContentLoaded', function() {
-					document.querySelectorAll('.rgbmind-copy-ml-btn').forEach(function(btn) {
+				(function() {
+					var modal = document.getElementById('rgbmind-user-details-modal');
+					if (!modal) return;
+					var closeBtn = document.getElementById('rgbmind-modal-close');
+					var okBtn = document.getElementById('rgbmind-modal-ok-btn');
+					var loginEl = document.getElementById('rgbmind-modal-login');
+					var nameEl = document.getElementById('rgbmind-modal-displayname');
+					var roleEl = document.getElementById('rgbmind-modal-role');
+					var createdEl = document.getElementById('rgbmind-modal-created');
+
+					function closeModal() {
+						modal.style.display = 'none';
+					}
+
+					if (closeBtn) closeBtn.addEventListener('click', closeModal);
+					if (okBtn) okBtn.addEventListener('click', closeModal);
+					modal.addEventListener('click', function(e) {
+						if (e.target === modal) closeModal();
+					});
+					document.addEventListener('keydown', function(e) {
+						if (e.key === 'Escape' && modal.style.display !== 'none') closeModal();
+					});
+
+					document.querySelectorAll('.rgbmind-user-info-trigger').forEach(function(btn) {
 						btn.addEventListener('click', function(e) {
 							e.preventDefault();
-							var url = this.getAttribute('data-url');
-							if (!url) return;
-							var button = this;
-							var span = button.querySelector('span:last-child') || button;
-							var originalText = span.textContent;
-
-							function showSuccess() {
-								span.textContent = '<?php echo esc_js( __( 'Copied!', 'rgbmind-ephemere' ) ); ?>';
-								button.style.borderColor = '#007017';
-								button.style.color = '#007017';
-								setTimeout(function() {
-									span.textContent = originalText;
-									button.style.borderColor = '';
-									button.style.color = '';
-								}, 2000);
-							}
-
-							if (navigator.clipboard && window.isSecureContext) {
-								navigator.clipboard.writeText(url).then(showSuccess, function() {
-									fallbackCopy(url);
-								});
+							loginEl.textContent = this.getAttribute('data-login') || '-';
+							nameEl.textContent = this.getAttribute('data-displayname') || '-';
+							roleEl.textContent = this.getAttribute('data-role') || '-';
+							var created = this.getAttribute('data-created') || '-';
+							var ago = this.getAttribute('data-created-ago');
+							if (ago) {
+								createdEl.textContent = created + ' (' + ago + ' <?php echo esc_js( __( 'ago', 'rgbmind-ephemere' ) ); ?>)';
 							} else {
-								fallbackCopy(url);
+								createdEl.textContent = created;
 							}
-
-							function fallbackCopy(text) {
-								var ta = document.createElement('textarea');
-								ta.value = text;
-								ta.style.position = 'fixed';
-								ta.style.left = '-9999px';
-								document.body.appendChild(ta);
-								ta.select();
-								try {
-									document.execCommand('copy');
-									showSuccess();
-								} catch(err) {
-									window.prompt('<?php echo esc_js( __( 'Copy this URL:', 'rgbmind-ephemere' ) ); ?>', text);
-								}
-								document.body.removeChild(ta);
-							}
+							modal.style.display = 'flex';
 						});
 					});
-				});
+				})();
 				</script>
 			<?php endif; ?>
 
@@ -2081,7 +2176,8 @@ function rgbmind_eph_render_dashboard() {
 							</a>
 						</div>
 					</form>
-				</div>
+					</div>
+				</details>
 			<?php endif; ?>
 
 		<!-- TAB 3: ACCESS AUDIT LOG (COMPLIANCE & AUDITING) -->
@@ -2125,10 +2221,15 @@ function rgbmind_eph_render_dashboard() {
 				$quick_default_max_logins = (int) get_option( 'rgbmind_eph_quick_default_max_logins', 0 );
 				$quick_counter            = (int) get_option( 'rgbmind_eph_quick_counter', 1 );
 				?>
-				<div class="card" style="margin: 0 0 25px 0; padding: 20px; max-width: none; border-left: 4px solid #137333;">
-					<h2 style="margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #e2e4e7; color: #1d2327; display: flex; align-items: center; gap: 8px;">
-						<span>⚡ <?php esc_html_e( '1-Click Quick Account Creation', 'rgbmind-ephemere' ); ?></span>
-					</h2>
+				<details class="card rgbmind-settings-details" style="margin: 0 0 20px 0; padding: 0; max-width: none; border-left: 4px solid #137333; overflow: hidden; background: #fff;">
+					<summary style="padding: 14px 20px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 10px; color: #1d2327; list-style: none; user-select: none;">
+						<span style="display: flex; align-items: center; gap: 8px;">
+							<span class="dashicons dashicons-arrow-right-alt2" style="transition: transform 0.2s ease; font-size: 18px; width: 18px; height: 18px; line-height: 18px; color: #50575e;"></span>
+							<span style="font-size: 15px; color: #1d2327;">⚡ <?php esc_html_e( 'Quick Account Defaults & Email Routing', 'rgbmind-ephemere' ); ?></span>
+						</span>
+						<span style="font-size: 12px; color: #646970; font-weight: 400;"><?php esc_html_e( 'Configure default role, expiration and email aliases', 'rgbmind-ephemere' ); ?></span>
+					</summary>
+					<div style="padding: 0 20px 20px 20px; border-top: 1px solid #f0f0f1;">
 					<p style="color: #50575e; font-size: 13.5px; margin-bottom: 20px;">
 						<?php esc_html_e( 'Configure the default parameters for 1-click temporary account creation from the JIT Access tab. The email alias allows creating multiple temporary accounts without needing separate email addresses.', 'rgbmind-ephemere' ); ?>
 					</p>
@@ -2244,16 +2345,20 @@ function rgbmind_eph_render_dashboard() {
 							</button>
 						</p>
 					</form>
-				</div>
+					</div>
+				</details>
 
 				<!-- PRO Hook for Companion Add-on Settings -->
 				<?php do_action( 'rgbmind_eph_render_dashboard_pro_settings' ); ?>
 
 				<?php if ( ! $is_pro ) : ?>
 					<!-- Informational Showcase: PRO Features Preview -->
-					<div class="card" style="margin: 0 0 20px 0; padding: 20px; max-width: none; background: #fafafa; border-left: 4px solid #2271b1;">
-						<h2 style="margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #e2e4e7; color: #1d2327;">
-							✨ <?php esc_html_e( 'Available Commercial Add-on: RGBmind Ephemere PRO', 'rgbmind-ephemere' ); ?>
+					<details class="card rgbmind-settings-details" style="margin: 0 0 20px 0; padding: 0; max-width: none; background: #fafafa; border-left: 4px solid #2271b1; overflow: hidden;">
+						<summary style="padding: 16px 20px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; color: #1d2327; list-style: none; user-select: none;">
+							<span class="dashicons dashicons-arrow-right-alt2" style="transition: transform 0.2s ease; font-size: 18px; width: 18px; height: 18px; line-height: 18px;"></span>
+							<span>🚀  esc_html_e( 'Available Commercial Add-on: RGBmind Ephemere PRO', 'rgbmind-ephemere' ); ?>
+						</summary>
+						<div style="padding: 0 20px 20px 20px; border-top: 1px solid #f0f0f1;">
 						</h2>
 						<p style="color: #50575e; font-size: 13.5px;">
 							<?php esc_html_e( 'Looking to enhance your temporary access workflow? RGBmind Ephemere PRO is available as a separate companion plugin featuring:', 'rgbmind-ephemere' ); ?>
@@ -2299,7 +2404,8 @@ function rgbmind_eph_render_dashboard() {
 								<?php esc_html_e( 'Learn more about Ephemere PRO at rgbmind.com', 'rgbmind-ephemere' ); ?> &rarr;
 							</a>
 						</p>
-					</div>
+						</div>
+					</details>
 				<?php endif; ?>
 
 
@@ -2961,7 +3067,7 @@ function rgbmind_eph_send_export( $basename, $headers, $rows, $format ) {
  * @param array  $extra_args   Additional query args (e.g. tab, active filters).
  * @return void
  */
-function rgbmind_eph_render_export_menu( $action, $nonce_action, $label, $extra_args = array() ) {
+function rgbmind_eph_render_export_menu( $action, $nonce_action, $label, $extra_args = array(), $compact = false ) {
 	static $assets_printed = false;
 	if ( ! $assets_printed ) {
 		$assets_printed = true;
@@ -2988,10 +3094,12 @@ function rgbmind_eph_render_export_menu( $action, $nonce_action, $label, $extra_
 	}
 	?>
 	<details class="rgbmind-export-menu">
-		<summary class="button button-secondary">
-			<span class="dashicons dashicons-download" style="font-size: 16px; width: 16px; height: 16px; line-height: 16px;"></span>
-			<?php echo esc_html( $label ); ?>
-			<span class="dashicons dashicons-arrow-down-alt2" style="font-size: 13px; width: 13px; height: 13px; line-height: 13px;"></span>
+		<summary class="button button-secondary" style="height: 28px; min-height: 28px; line-height: 26px; font-size: 12px; padding: 0 <?php echo $compact ? '5px' : '8px'; ?>; display: inline-flex; align-items: center; gap: 2px;" title="<?php echo esc_attr( $label ); ?>">
+			<span class="dashicons dashicons-download" style="font-size: 15px; width: 15px; height: 15px; line-height: 15px;"></span>
+			<?php if ( ! $compact ) : ?>
+				<span><?php echo esc_html( $label ); ?></span>
+			<?php endif; ?>
+			<span class="dashicons dashicons-arrow-down-alt2" style="font-size: 10px; width: 10px; height: 10px; line-height: 10px;"></span>
 		</summary>
 		<div class="rgbmind-export-panel">
 			<div class="rgbmind-export-panel-title"><?php esc_html_e( 'Choose file format', 'rgbmind-ephemere' ); ?></div>
@@ -3070,11 +3178,15 @@ function rgbmind_eph_get_magic_state_key( $user_id ) {
  */
 function rgbmind_eph_get_account_filters_from_request() {
 	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only list filters.
+	$orderby = isset( $_GET['orderby'] ) ? sanitize_key( wp_unslash( $_GET['orderby'] ) ) : 'registered';
+	$order   = isset( $_GET['order'] ) && 'asc' === strtolower( sanitize_key( wp_unslash( $_GET['order'] ) ) ) ? 'asc' : 'desc';
 	$filters = array(
-		's'      => isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '',
-		'status' => isset( $_GET['status'] ) ? sanitize_key( wp_unslash( $_GET['status'] ) ) : '',
-		'role'   => isset( $_GET['role'] ) ? sanitize_key( wp_unslash( $_GET['role'] ) ) : '',
-		'ml'     => isset( $_GET['ml'] ) ? sanitize_key( wp_unslash( $_GET['ml'] ) ) : '',
+		's'       => isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '',
+		'status'  => isset( $_GET['status'] ) ? sanitize_key( wp_unslash( $_GET['status'] ) ) : '',
+		'role'    => isset( $_GET['role'] ) ? sanitize_key( wp_unslash( $_GET['role'] ) ) : '',
+		'ml'      => isset( $_GET['ml'] ) ? sanitize_key( wp_unslash( $_GET['ml'] ) ) : '',
+		'orderby' => $orderby,
+		'order'   => $order,
 	);
 	// phpcs:enable WordPress.Security.NonceVerification.Recommended
 	return $filters;
@@ -3108,6 +3220,59 @@ function rgbmind_eph_filter_accounts( $users, $filters ) {
 		}
 		$out[] = $u;
 	}
+	$orderby = isset( $filters['orderby'] ) ? $filters['orderby'] : 'registered';
+	$order   = isset( $filters['order'] ) && 'asc' === strtolower( $filters['order'] ) ? 'asc' : 'desc';
+
+	usort(
+		$out,
+		function( $a, $b ) use ( $orderby, $order ) {
+			$res = 0;
+			switch ( $orderby ) {
+				case 'role':
+					$r_a = ! empty( $a->roles ) ? reset( $a->roles ) : '';
+					$r_b = ! empty( $b->roles ) ? reset( $b->roles ) : '';
+					$res = strcasecmp( (string) $r_a, (string) $r_b );
+					break;
+				case 'user_login':
+					$res = strcasecmp( (string) $a->user_login, (string) $b->user_login );
+					break;
+				case 'user_email':
+					$res = strcasecmp( (string) $a->user_email, (string) $b->user_email );
+					break;
+				case 'expire':
+					$exp_a = (int) get_user_meta( $a->ID, '_rgbmind_expire_at', true );
+					$exp_b = (int) get_user_meta( $b->ID, '_rgbmind_expire_at', true );
+					$res   = $exp_a <=> $exp_b;
+					break;
+				case 'login_count':
+					$cnt_a = (int) get_user_meta( $a->ID, '_rgbmind_login_count', true );
+					$cnt_b = (int) get_user_meta( $b->ID, '_rgbmind_login_count', true );
+					$res   = $cnt_a <=> $cnt_b;
+					break;
+				case 'status':
+					$st_a = rgbmind_eph_get_account_status_key( $a->ID );
+					$st_b = rgbmind_eph_get_account_status_key( $b->ID );
+					$res  = strcasecmp( $st_a, $st_b );
+					break;
+				case 'countdown':
+				case 'ml':
+					$tok_a = (int) get_user_meta( $a->ID, '_rgbmind_magic_token_exp', true );
+					if ( 0 === $tok_a ) { $tok_a = (int) get_user_meta( $a->ID, '_rgbmind_magic_token_expires', true ); }
+					$tok_b = (int) get_user_meta( $b->ID, '_rgbmind_magic_token_exp', true );
+					if ( 0 === $tok_b ) { $tok_b = (int) get_user_meta( $b->ID, '_rgbmind_magic_token_expires', true ); }
+					$res   = $tok_a <=> $tok_b;
+					break;
+				case 'registered':
+				default:
+					$reg_a = ! empty( $a->user_registered ) ? strtotime( $a->user_registered ) : $a->ID;
+					$reg_b = ! empty( $b->user_registered ) ? strtotime( $b->user_registered ) : $b->ID;
+					$res   = $reg_a <=> $reg_b;
+					break;
+			}
+			return ( 'desc' === $order ) ? -$res : $res;
+		}
+	);
+
 	return $out;
 }
 
@@ -3265,24 +3430,24 @@ function rgbmind_eph_render_quick_create_form() {
 	if ( ! isset( $durations[ $sel_dur ] ) ) {
 		$durations[ $sel_dur ] = human_time_diff( 0, $sel_dur );
 	}
-	$select_style = 'border: 0; border-right: 1px solid #c3c4c7; border-radius: 0; min-height: 30px; padding: 0 26px 0 10px; font-size: 13px; box-shadow: none; margin: 0; background-color: #fff;';
+	$select_style = 'border: 0; border-right: 1px solid #c3c4c7; border-radius: 0; height: 28px; min-height: 28px; line-height: 26px; padding: 0 22px 0 6px; font-size: 12px; box-shadow: none; margin: 0; background-color: #fff; vertical-align: middle; display: inline-flex; align-items: center;';
 	$is_pro        = rgbmind_eph_is_pro_active();
 	$active_count  = rgbmind_eph_count_active_temporary_accounts();
 	$free_limit    = rgbmind_eph_get_free_active_accounts_limit();
 	$limit_reached = ( ! $is_pro && $active_count >= $free_limit );
 	?>
-	<form method="post" action="" class="rgbmind-quick-create" style="display: inline-flex; align-items: stretch; margin: 0; border: 1px solid <?php echo $limit_reached ? '#e3a824' : '#137333'; ?>; border-radius: 4px; overflow: hidden; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+	<form method="post" action="" class="rgbmind-quick-create" style="display: inline-flex; align-items: stretch; margin: 0; border: 1px solid <?php echo $limit_reached ? '#e3a824' : '#137333'; ?>; border-radius: 4px; overflow: hidden; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.04); height: 28px;">
 		<?php wp_nonce_field( 'rgbmind_eph_quick_create', 'rgbmind_eph_quick_create_nonce' ); ?>
-		<span style="display: inline-flex; align-items: center; padding: 0 0 0 10px; color: <?php echo $limit_reached ? '#b06000' : '#137333'; ?>;" aria-hidden="true">
-			<span class="dashicons dashicons-admin-users" style="font-size: 16px; width: 16px; height: 16px; line-height: 16px;"></span>
+		<span style="display: inline-flex; align-items: center; padding: 0 0 0 8px; color: <?php echo $limit_reached ? '#b06000' : '#137333'; ?>;" aria-hidden="true">
+			<span class="dashicons dashicons-admin-users" style="font-size: 14px; width: 14px; height: 14px; line-height: 14px;"></span>
 		</span>
-		<select name="rgbmind_quick_role" aria-label="<?php esc_attr_e( 'Role', 'rgbmind-ephemere' ); ?>" title="<?php esc_attr_e( 'Role', 'rgbmind-ephemere' ); ?>" style="<?php echo esc_attr( $select_style ); ?> max-width: 170px;" <?php disabled( $limit_reached, true ); ?>>
+		<select name="rgbmind_quick_role" aria-label="<?php esc_attr_e( 'Role', 'rgbmind-ephemere' ); ?>" title="<?php esc_attr_e( 'Role', 'rgbmind-ephemere' ); ?>" style="<?php echo esc_attr( $select_style ); ?> max-width: 140px;" <?php disabled( $limit_reached, true ); ?>>
 			<?php foreach ( $roles as $role_slug => $role_info ) : ?>
 				<option value="<?php echo esc_attr( $role_slug ); ?>" <?php selected( $sel_role, $role_slug ); ?>><?php echo esc_html( translate_user_role( $role_info['name'] ) ); ?></option>
 			<?php endforeach; ?>
 		</select>
-		<span style="display: inline-flex; align-items: center; padding: 0 0 0 10px; color: <?php echo $limit_reached ? '#b06000' : '#137333'; ?>;" aria-hidden="true">
-			<span class="dashicons dashicons-clock" style="font-size: 16px; width: 16px; height: 16px; line-height: 16px;"></span>
+		<span style="display: inline-flex; align-items: center; padding: 0 0 0 8px; color: <?php echo $limit_reached ? '#b06000' : '#137333'; ?>;" aria-hidden="true">
+			<span class="dashicons dashicons-clock" style="font-size: 14px; width: 14px; height: 14px; line-height: 14px;"></span>
 		</span>
 		<select name="rgbmind_quick_duration" aria-label="<?php esc_attr_e( 'Duration', 'rgbmind-ephemere' ); ?>" title="<?php esc_attr_e( 'Account duration', 'rgbmind-ephemere' ); ?>" style="<?php echo esc_attr( $select_style ); ?>" <?php disabled( $limit_reached, true ); ?>>
 			<?php foreach ( $durations as $secs => $dur_label ) : ?>
@@ -3290,14 +3455,14 @@ function rgbmind_eph_render_quick_create_form() {
 			<?php endforeach; ?>
 		</select>
 		<?php if ( $limit_reached ) : ?>
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=settings' ) ); ?>" class="button" style="display: inline-flex; align-items: center; gap: 6px; background: #fef7e0; color: #b06000; border: 0; border-radius: 0; margin: 0; min-height: 30px; font-weight: 600; text-decoration: none;" title="<?php esc_attr_e( 'Free limit reached. Click to upgrade to PRO.', 'rgbmind-ephemere' ); ?>">
-				<span class="dashicons dashicons-lock" style="font-size: 15px; width: 15px; height: 15px; line-height: 15px; color: #b06000;"></span>
-				<?php printf( esc_html__( 'Free Limit Reached (%1$d/%2$d) – Upgrade to PRO', 'rgbmind-ephemere' ), (int) $active_count, (int) $free_limit ); ?>
+			<a href="<?php echo esc_url( admin_url( 'admin.php?page=rgbmind-ephemere&tab=settings' ) ); ?>" class="button" style="display: inline-flex; align-items: center; gap: 5px; background: #fef7e0; color: #b06000; border: 0; border-radius: 0; margin: 0; height: 28px; min-height: 28px; line-height: 26px; font-size: 12px; font-weight: 600; text-decoration: none; padding: 0 8px;" title="<?php esc_attr_e( 'Free limit reached. Click to upgrade to PRO.', 'rgbmind-ephemere' ); ?>">
+				<span class="dashicons dashicons-lock" style="font-size: 13px; width: 13px; height: 13px; line-height: 13px; color: #b06000;"></span>
+				<?php printf( esc_html__( 'Limit (%1$d/%2$d) – PRO', 'rgbmind-ephemere' ), (int) $active_count, (int) $free_limit ); ?>
 			</a>
 		<?php else : ?>
-			<button type="submit" name="rgbmind_eph_do_quick_create" value="1" class="button button-primary" style="display: inline-flex; align-items: center; gap: 5px; background: #137333; border: 0; border-radius: 0; margin: 0; min-height: 30px;">
-				<span class="dashicons dashicons-plus-alt2" style="font-size: 16px; width: 16px; height: 16px; line-height: 16px;"></span>
-				<?php esc_html_e( 'Create Temporary User', 'rgbmind-ephemere' ); ?>
+			<button type="submit" name="rgbmind_eph_do_quick_create" value="1" class="button button-primary" style="display: inline-flex; align-items: center; justify-content: center; gap: 4px; background: #137333; border: 0; border-radius: 0; margin: 0; height: 28px; min-height: 28px; line-height: 1; font-size: 12px; padding: 0 10px;">
+				<span class="dashicons dashicons-plus-alt2" style="font-size: 14px; width: 14px; height: 14px; line-height: 14px; display: inline-block;"></span>
+				<span style="display: inline-block; line-height: 1;"><?php esc_html_e( 'Create User', 'rgbmind-ephemere' ); ?></span>
 			</button>
 		<?php endif; ?>
 	</form>
