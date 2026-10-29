@@ -3,7 +3,7 @@
  * Plugin Name:       RGBmind Ephemere
  * Plugin URI:        https://rgbmind.com/ephemere/
  * Description:       Advanced temporary login and timed access manager for WordPress users. Set expiration dates, max login limits, and instant account locking with zero custom database tables and zero external API calls.
- * Version:           1.3.1
+ * Version:           1.3.2
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            RGBmind
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin constants.
  */
-define( 'RGBMIND_EPH_VERSION', '1.3.1' );
+define( 'RGBMIND_EPH_VERSION', '1.3.2' );
 define( 'RGBMIND_EPH_PLUGIN_FILE', __FILE__ );
 define( 'RGBMIND_EPH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'RGBMIND_EPH_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -2356,10 +2356,9 @@ function rgbmind_eph_render_dashboard() {
 					<details class="card rgbmind-settings-details" style="margin: 0 0 20px 0; padding: 0; max-width: none; background: #fafafa; border-left: 4px solid #2271b1; overflow: hidden;">
 						<summary style="padding: 16px 20px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; color: #1d2327; list-style: none; user-select: none;">
 							<span class="dashicons dashicons-arrow-right-alt2" style="transition: transform 0.2s ease; font-size: 18px; width: 18px; height: 18px; line-height: 18px;"></span>
-							<span>🚀  esc_html_e( 'Available Commercial Add-on: RGBmind Ephemere PRO', 'rgbmind-ephemere' ); ?>
+							<span>🚀 <?php esc_html_e( 'Available Commercial Add-on: RGBmind Ephemere PRO', 'rgbmind-ephemere' ); ?></span>
 						</summary>
 						<div style="padding: 0 20px 20px 20px; border-top: 1px solid #f0f0f1;">
-						</h2>
 						<p style="color: #50575e; font-size: 13.5px;">
 							<?php esc_html_e( 'Looking to enhance your temporary access workflow? RGBmind Ephemere PRO is available as a separate companion plugin featuring:', 'rgbmind-ephemere' ); ?>
 						</p>
